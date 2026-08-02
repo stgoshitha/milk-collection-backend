@@ -12,6 +12,7 @@ public final class SecurityConstants {
     public static final String CLAIM_PERMISSIONS = "permissions";
     public static final String CLAIM_USER_ID = "userId";
     public static final String CLAIM_EMAIL = "email";
+    public static final String CLAIM_USERNAME = "username";
 
     // Authentication Headers
     public static final String AUTHORIZATION_HEADER = "Authorization";
