@@ -1,5 +1,6 @@
 package com.project.milkcollection.security;
 
+import com.project.milkcollection.common.constants.SecurityConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.Map;
@@ -60,8 +62,8 @@ public class JwtService {
                 // Extra claims
                 .claims(
                         Map.of(
-                                "username", username,
-                                "role", role
+                                SecurityConstants.CLAIM_USERNAME, username,
+                                SecurityConstants.CLAIM_ROLE, role
                         )
                 )
                 .issuedAt(new Date())
@@ -96,7 +98,7 @@ public class JwtService {
         return extractClaim(
                 token,
                 claims -> claims.get(
-                        "username",
+                        SecurityConstants.CLAIM_USERNAME,
                         String.class
                 )
         );
@@ -111,7 +113,7 @@ public class JwtService {
         return extractClaim(
                 token,
                 claims -> claims.get(
-                        "role",
+                        SecurityConstants.CLAIM_ROLE,
                         String.class
                 )
         );
@@ -124,11 +126,7 @@ public class JwtService {
             String userId
     ) {
 
-        String extractedUserId =
-                extractUserId(token);
-
-
-        return extractedUserId.equals(userId)
+        return userId.equals(extractUserId(token))
                 && !isTokenExpired(token);
     }
 
@@ -193,7 +191,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(
                 jwtProperties
                         .getSecret()
-                        .getBytes()
+                        .getBytes(StandardCharsets.UTF_8)
         );
     }
 }
