@@ -154,9 +154,6 @@ ON farmer_bank_accounts(bank_id);
 CREATE INDEX idx_farmer_phone
 ON farmers(phone_number);
 
-CREATE INDEX idx_collector_phone
-ON collectors(phone_number);
-
 -- =====================================================
 -- DEFAULT BANKS
 -- =====================================================
