@@ -82,4 +82,10 @@ public final class RegexConstants {
     public static final String DECIMAL =
             "^\\d+(\\.\\d{1,2})?$";
 
+    /**
+     * Role name
+     *
+     */
+    public static final String ROLE_NAME =
+            "^[A-Z_]{3,50}$";
 }

@@ -31,6 +31,7 @@ public final class SecurityConstants {
 
     // Roles
     public static final String ROLE_PREFIX = "ROLE_";
+    public static final String ROLE_BASE_URL = "/api/v1/roles";
 
     // Password
     public static final int BCRYPT_STRENGTH = 12;

@@ -34,4 +34,21 @@ public final class ResponseMessage {
     public static final String TOKEN_REQUIRED = "Authentication token is required";
 
     public static final String ACCESS_DENIED = "You do not have permission to access this resource";
+
+    // Role response messages
+    public static final String ROLE_CREATED_SUCCESSFULLY = "Role created successfully";
+    public static final String ROLE_UPDATED_SUCCESSFULLY = "Role updated successfully";
+    public static final String ROLE_DELETED_SUCCESSFULLY = "Role deleted successfully";
+
+    public static final String ROLE_FETCH_SUCCESSFULLY = "Role retrieved successfully";
+    public static final String ROLES_FETCH_SUCCESSFULLY = "Roles retrieved successfully";
+
+    public static final String ROLE_NOT_FOUND = "Role not found";
+    public static final String ROLE_ALREADY_EXISTS = "Role already exists";
+    public static final String ROLE_NAME_ALREADY_EXISTS = "Role name already exists";
+
+    public static final String ROLE_ACTIVATED_SUCCESSFULLY = "Role activated successfully";
+    public static final String ROLE_DEACTIVATED_SUCCESSFULLY = "Role deactivated successfully";
+
+    public static final String INVALID_ROLE_STATUS = "Invalid role status";
 }
