@@ -1,8 +1,9 @@
 package com.project.milkcollection.auth.controller;
 
 import com.project.milkcollection.auth.dto.request.CreateRoleRequest;
+import com.project.milkcollection.auth.dto.request.UpdateRoleRequest;
+import com.project.milkcollection.auth.dto.request.UpdateRoleStatusRequest;
 import com.project.milkcollection.auth.dto.response.RoleResponse;
-import com.project.milkcollection.auth.entity.Role;
 import com.project.milkcollection.auth.service.RoleService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.constants.SecurityConstants;
@@ -63,6 +64,39 @@ public class RoleController {
                 ApiResponse.success(
                         ResponseMessage.ROLES_FETCH_SUCCESSFULLY,
                         roles
+                )
+        );
+    }
+
+    @PutMapping("/{roleId}")
+    public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
+            @PathVariable UUID roleId,
+            @Valid @RequestBody UpdateRoleRequest updateRoleRequest
+    ){
+
+        RoleResponse role = roleService.updateRole(roleId, updateRoleRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.ROLE_UPDATED_SUCCESSFULLY,
+                        role
+                )
+        );
+
+    }
+
+    @PatchMapping("/{roleId}/status")
+    public ResponseEntity<ApiResponse<RoleResponse>> updateRoleStatus(
+            @PathVariable UUID roleId,
+            @Valid @RequestBody UpdateRoleStatusRequest updateRoleStatusRequest
+    ) {
+
+        RoleResponse role = roleService.updateRoleStatus(roleId, updateRoleStatusRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.ROLE_STATUS_UPDATED_SUCCESSFULLY,
+                        role
                 )
         );
     }

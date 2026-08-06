@@ -38,6 +38,7 @@ public final class ResponseMessage {
     // Role response messages
     public static final String ROLE_CREATED_SUCCESSFULLY = "Role created successfully";
     public static final String ROLE_UPDATED_SUCCESSFULLY = "Role updated successfully";
+    public static final String ROLE_STATUS_UPDATED_SUCCESSFULLY = "Role status updated successfully";
     public static final String ROLE_DELETED_SUCCESSFULLY = "Role deleted successfully";
 
     public static final String ROLE_FETCH_SUCCESSFULLY = "Role retrieved successfully";
@@ -49,6 +50,7 @@ public final class ResponseMessage {
 
     public static final String ROLE_ACTIVATED_SUCCESSFULLY = "Role activated successfully";
     public static final String ROLE_DEACTIVATED_SUCCESSFULLY = "Role deactivated successfully";
+    public static final String ROLE_STATUS_ALREADY_UPDATED = "Role already has the requested status";
 
     public static final String INVALID_ROLE_STATUS = "Invalid role status";
 }

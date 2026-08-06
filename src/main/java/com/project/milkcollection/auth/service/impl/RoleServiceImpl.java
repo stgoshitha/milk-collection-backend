@@ -1,6 +1,8 @@
 package com.project.milkcollection.auth.service.impl;
 
 import com.project.milkcollection.auth.dto.request.CreateRoleRequest;
+import com.project.milkcollection.auth.dto.request.UpdateRoleRequest;
+import com.project.milkcollection.auth.dto.request.UpdateRoleStatusRequest;
 import com.project.milkcollection.auth.dto.response.RoleResponse;
 import com.project.milkcollection.auth.entity.Role;
 import com.project.milkcollection.auth.mapper.RoleMapper;
@@ -59,6 +61,48 @@ public class RoleServiceImpl implements RoleService {
 
         return roleMapper.toResponseList(roles);
 
+    }
+
+    @Override
+    @Transactional
+    public RoleResponse updateRole(UUID roleId, UpdateRoleRequest request) {
+
+        Role role = findRoleById(roleId);
+
+        if(!role.getRoleName().equalsIgnoreCase(request.roleName())
+                && roleRepository.existsByRoleName(request.roleName())) {
+
+            throw new ConflictException(
+                    ResponseMessage.ROLE_ALREADY_EXISTS
+            );
+        }
+
+        roleMapper.updateEntity(request, role);
+
+        Role updatedRole = roleRepository.save(role);
+
+        return  roleMapper.toResponse(updatedRole);
+
+
+    }
+
+    @Override
+    @Transactional
+    public RoleResponse updateRoleStatus(UUID roleId, UpdateRoleStatusRequest updateRoleStatusRequest) {
+
+        Role role = findRoleById(roleId);
+
+        if (role.getStatus() == updateRoleStatusRequest.status()) {
+            throw new ConflictException(
+                    ResponseMessage.ROLE_STATUS_ALREADY_UPDATED
+            );
+        }
+
+        role.setStatus(updateRoleStatusRequest.status());
+
+        Role updatedRole = roleRepository.save(role);
+
+        return roleMapper.toResponse(updatedRole);
     }
 
     private Role findRoleById(UUID roleId) {
