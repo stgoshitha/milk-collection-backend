@@ -9,13 +9,16 @@ import com.project.milkcollection.auth.service.RoleService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.enums.CommonStatus;
 import com.project.milkcollection.exception.ConflictException;
-import jakarta.transaction.Transactional;
+import com.project.milkcollection.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
@@ -23,6 +26,7 @@ public class RoleServiceImpl implements RoleService {
 
     // Create new role
     @Override
+    @Transactional
     public RoleResponse createRole(CreateRoleRequest request) {
 
         if (roleRepository.existsByRoleName(request.roleName())) {
@@ -36,5 +40,32 @@ public class RoleServiceImpl implements RoleService {
         Role savedRole = roleRepository.saveAndFlush(role);
 
         return roleMapper.toResponse(savedRole);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RoleResponse getRoleById(UUID roleId) {
+
+        Role role = findRoleById(roleId);
+
+        return roleMapper.toResponse(role);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RoleResponse> getAllRoles() {
+
+        List<Role> roles = roleRepository.findAll();
+
+        return roleMapper.toResponseList(roles);
+
+    }
+
+    private Role findRoleById(UUID roleId) {
+
+        return roleRepository.findById(roleId)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(ResponseMessage.ROLE_NOT_FOUND)
+                );
     }
 }
