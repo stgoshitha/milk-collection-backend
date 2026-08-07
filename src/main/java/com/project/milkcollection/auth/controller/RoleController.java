@@ -35,7 +35,7 @@ public class RoleController {
                 .status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.success(
-                                ResponseMessage.ROLE_CREATED_SUCCESSFULLY,
+                                "Role " +  ResponseMessage.CREATED_SUCCESSFULLY,
                                 response
                         )
                 );
@@ -49,7 +49,7 @@ public class RoleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        ResponseMessage.ROLE_FETCH_SUCCESSFULLY,
+                        "Role " + ResponseMessage.FETCH_SUCCESSFULLY,
                         role
                 )
         );
@@ -62,7 +62,7 @@ public class RoleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        ResponseMessage.ROLES_FETCH_SUCCESSFULLY,
+                        "Roles " + ResponseMessage.FETCH_SUCCESSFULLY,
                         roles
                 )
         );
@@ -78,7 +78,7 @@ public class RoleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        ResponseMessage.ROLE_UPDATED_SUCCESSFULLY,
+                        "Role " + ResponseMessage.UPDATED_SUCCESSFULLY,
                         role
                 )
         );
@@ -95,7 +95,22 @@ public class RoleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        ResponseMessage.ROLE_STATUS_UPDATED_SUCCESSFULLY,
+                        "Role status " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        role
+                )
+        );
+    }
+
+    @DeleteMapping("/{roleId}")
+    public ResponseEntity<ApiResponse<RoleResponse>> deleteRole(
+            @PathVariable UUID roleId
+    ){
+
+        RoleResponse role = roleService.deleteRole(roleId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.ROLE_DEACTIVATED_SUCCESSFULLY,
                         role
                 )
         );

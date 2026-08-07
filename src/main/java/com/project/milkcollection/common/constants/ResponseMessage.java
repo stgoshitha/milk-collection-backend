@@ -11,10 +11,10 @@ public final class ResponseMessage {
     public static final String SUCCESS = "Success";
     public static final String FAILED = "Failed";
 
-    public static final String CREATED_SUCCESSFULLY = "Created successfully";
-    public static final String UPDATED_SUCCESSFULLY = "Updated successfully";
-    public static final String DELETED_SUCCESSFULLY = "Deleted successfully";
-    public static final String FETCH_SUCCESSFULLY = "Data retrieved successfully";
+    public static final String CREATED_SUCCESSFULLY = "created successfully";
+    public static final String UPDATED_SUCCESSFULLY = "updated successfully";
+    public static final String DELETED_SUCCESSFULLY = "deleted successfully";
+    public static final String FETCH_SUCCESSFULLY = "data retrieved successfully";
 
 
     // Authentication response messages
@@ -36,22 +36,10 @@ public final class ResponseMessage {
     public static final String ACCESS_DENIED = "You do not have permission to access this resource";
 
     // Role response messages
-    public static final String ROLE_CREATED_SUCCESSFULLY = "Role created successfully";
-    public static final String ROLE_UPDATED_SUCCESSFULLY = "Role updated successfully";
-    public static final String ROLE_STATUS_UPDATED_SUCCESSFULLY = "Role status updated successfully";
-    public static final String ROLE_DELETED_SUCCESSFULLY = "Role deleted successfully";
-
-    public static final String ROLE_FETCH_SUCCESSFULLY = "Role retrieved successfully";
-    public static final String ROLES_FETCH_SUCCESSFULLY = "Roles retrieved successfully";
-
     public static final String ROLE_NOT_FOUND = "Role not found";
-    public static final String ROLE_ALREADY_EXISTS = "Role already exists";
     public static final String ROLE_NAME_ALREADY_EXISTS = "Role name already exists";
     public static final String ROLE_CODE_ALREADY_EXISTS = "Role code already exists";
-
-    public static final String ROLE_ACTIVATED_SUCCESSFULLY = "Role activated successfully";
     public static final String ROLE_DEACTIVATED_SUCCESSFULLY = "Role deactivated successfully";
     public static final String ROLE_STATUS_ALREADY_UPDATED = "Role already has the requested status";
-
-    public static final String INVALID_ROLE_STATUS = "Invalid role status";
+    public static final String ROLE_ALREADY_DELETED = "Role is already inactive";
 }

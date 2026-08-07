@@ -99,6 +99,26 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.toResponse(updatedRole);
     }
 
+    // Soft delete role
+    @Override
+    @Transactional
+    public RoleResponse deleteRole(UUID roleId) {
+
+        Role role = findRoleById(roleId);
+
+        if (role.getStatus() == CommonStatus.INACTIVE) {
+            throw new ConflictException(
+                    ResponseMessage.ROLE_ALREADY_DELETED
+            );
+        }
+
+        role.setStatus(CommonStatus.INACTIVE);
+
+        Role deletedRole = roleRepository.save(role);
+
+        return roleMapper.toResponse(deletedRole);
+    }
+
     // Find role by ID or throw exception
     private Role findRoleById(UUID roleId) {
 
