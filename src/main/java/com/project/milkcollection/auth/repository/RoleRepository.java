@@ -10,9 +10,22 @@ import java.util.UUID;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, UUID> {
 
-    // Find role by role name
+    // Find a role by its display name.
     Optional<Role> findByRoleName(String roleName);
 
-    // Check whether role already exists
+    // Find a role by its unique system code.
+    Optional<Role> findByRoleCode(String roleCode);
+
+    // Check whether a role code already exists.
+    boolean existsByRoleCode(String roleCode);
+
+    // Check whether a role name already exists.
     boolean existsByRoleName(String roleName);
+
+    // Check whether another role already uses the given role code.
+    boolean existsByRoleCodeIgnoreCaseAndRoleIdNot(String roleCode, UUID roleId);
+
+    // Check whether another role already uses the given role name.
+    boolean existsByRoleNameIgnoreCaseAndRoleIdNot(String roleName, UUID roleId);
+
 }

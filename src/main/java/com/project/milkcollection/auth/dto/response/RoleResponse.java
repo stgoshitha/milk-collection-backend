@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public record RoleResponse(
         UUID roleId,
+        String roleCode,
         String roleName,
         String description,
         CommonStatus status,

@@ -26,17 +26,15 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
 
-    // Create new role
+    // Create a new role
     @Override
     @Transactional
     public RoleResponse createRole(CreateRoleRequest request) {
 
-        if (roleRepository.existsByRoleName(request.roleName())) {
-            throw new ConflictException(ResponseMessage.ROLE_ALREADY_EXISTS);
-        }
+        validateRoleCode(request.roleCode(), null);
+        validateRoleName(request.roleName(), null);
 
         Role role = roleMapper.toEntity(request);
-
         role.setStatus(CommonStatus.ACTIVE);
 
         Role savedRole = roleRepository.saveAndFlush(role);
@@ -44,6 +42,7 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.toResponse(savedRole);
     }
 
+    // Get role by ID
     @Override
     @Transactional(readOnly = true)
     public RoleResponse getRoleById(UUID roleId) {
@@ -53,63 +52,87 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.toResponse(role);
     }
 
+    // Get all roles
     @Override
     @Transactional(readOnly = true)
     public List<RoleResponse> getAllRoles() {
 
-        List<Role> roles = roleRepository.findAll();
-
-        return roleMapper.toResponseList(roles);
-
+        return roleMapper.toResponseList(roleRepository.findAll());
     }
 
+    // Update role details
     @Override
     @Transactional
     public RoleResponse updateRole(UUID roleId, UpdateRoleRequest request) {
 
         Role role = findRoleById(roleId);
 
-        if(!role.getRoleName().equalsIgnoreCase(request.roleName())
-                && roleRepository.existsByRoleName(request.roleName())) {
-
-            throw new ConflictException(
-                    ResponseMessage.ROLE_ALREADY_EXISTS
-            );
-        }
+        validateRoleCode(request.roleCode(), role);
+        validateRoleName(request.roleName(), role);
 
         roleMapper.updateEntity(request, role);
-
-        Role updatedRole = roleRepository.save(role);
-
-        return  roleMapper.toResponse(updatedRole);
-
-
-    }
-
-    @Override
-    @Transactional
-    public RoleResponse updateRoleStatus(UUID roleId, UpdateRoleStatusRequest updateRoleStatusRequest) {
-
-        Role role = findRoleById(roleId);
-
-        if (role.getStatus() == updateRoleStatusRequest.status()) {
-            throw new ConflictException(
-                    ResponseMessage.ROLE_STATUS_ALREADY_UPDATED
-            );
-        }
-
-        role.setStatus(updateRoleStatusRequest.status());
 
         Role updatedRole = roleRepository.save(role);
 
         return roleMapper.toResponse(updatedRole);
     }
 
+    // Update role status
+    @Override
+    @Transactional
+    public RoleResponse updateRoleStatus(
+            UUID roleId,
+            UpdateRoleStatusRequest request) {
+
+        Role role = findRoleById(roleId);
+
+        if (role.getStatus() == request.status()) {
+            throw new ConflictException(
+                    ResponseMessage.ROLE_STATUS_ALREADY_UPDATED
+            );
+        }
+
+        role.setStatus(request.status());
+
+        Role updatedRole = roleRepository.save(role);
+
+        return roleMapper.toResponse(updatedRole);
+    }
+
+    // Find role by ID or throw exception
     private Role findRoleById(UUID roleId) {
 
         return roleRepository.findById(roleId)
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(ResponseMessage.ROLE_NOT_FOUND)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                ResponseMessage.ROLE_NOT_FOUND
+                        )
                 );
+    }
+
+    // Validate unique role code
+    private void validateRoleCode(String roleCode, Role existingRole) {
+
+        boolean changed = existingRole == null
+                || !existingRole.getRoleCode().equalsIgnoreCase(roleCode);
+
+        if (changed && roleRepository.existsByRoleCode(roleCode)) {
+            throw new ConflictException(
+                    ResponseMessage.ROLE_CODE_ALREADY_EXISTS
+            );
+        }
+    }
+
+    // Validate unique role name
+    private void validateRoleName(String roleName, Role existingRole) {
+
+        boolean changed = existingRole == null
+                || !existingRole.getRoleName().equalsIgnoreCase(roleName);
+
+        if (changed && roleRepository.existsByRoleName(roleName)) {
+            throw new ConflictException(
+                    ResponseMessage.ROLE_NAME_ALREADY_EXISTS
+            );
+        }
     }
 }

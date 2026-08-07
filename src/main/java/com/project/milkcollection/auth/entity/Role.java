@@ -21,6 +21,9 @@ public class Role extends BaseEntity {
     @Column(name = "role_id", nullable = false, updatable = false)
     private UUID roleId;
 
+    @Column(name = "role_code", nullable = false, unique = true, length = 50)
+    private String roleCode;
+
     @Column(name = "role_name", nullable = false, length = 50, unique = true)
     private String roleName;
 

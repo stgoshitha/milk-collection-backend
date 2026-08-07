@@ -87,5 +87,12 @@ public final class RegexConstants {
      *
      */
     public static final String ROLE_NAME =
-            "^[A-Z_]{3,50}$";
+            "^[A-Za-z][A-Za-z0-9_ ]{1,49}$";
+
+    /**
+     * Role code
+     *
+     */
+    public static final String ROLE_CODE =
+            "^ROLE_[A-Z0-9_]{2,47}$";
 }

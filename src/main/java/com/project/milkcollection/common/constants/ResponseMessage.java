@@ -47,6 +47,7 @@ public final class ResponseMessage {
     public static final String ROLE_NOT_FOUND = "Role not found";
     public static final String ROLE_ALREADY_EXISTS = "Role already exists";
     public static final String ROLE_NAME_ALREADY_EXISTS = "Role name already exists";
+    public static final String ROLE_CODE_ALREADY_EXISTS = "Role code already exists";
 
     public static final String ROLE_ACTIVATED_SUCCESSFULLY = "Role activated successfully";
     public static final String ROLE_DEACTIVATED_SUCCESSFULLY = "Role deactivated successfully";
