@@ -14,20 +14,20 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Module extends BaseEntity {
+public class SystemModule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "module_id", nullable = false, updatable = false)
-    private UUID moduleId;
+    private UUID systemModuleId;
 
     @Column(name = "module_name", nullable = false, length = 100, unique = true)
-    private String moduleName;
+    private String systemModuleName;
 
-    @Column(name = "description", length = 225)
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "display_order")
+    @Column(name = "display_order", nullable = false)
     private Integer displayOrder;
 
     @Column(name = "icon", length = 100)
