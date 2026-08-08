@@ -1,7 +1,7 @@
 package com.project.milkcollection.auth.mapper;
 
-import com.project.milkcollection.auth.dto.request.CreateSystemModuleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateSystemModuleRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.CreateSystemModuleRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleRequest;
 import com.project.milkcollection.auth.dto.response.SystemModuleResponse;
 import com.project.milkcollection.auth.entity.SystemModule;
 import org.mapstruct.Mapper;

@@ -1,8 +1,8 @@
 package com.project.milkcollection.auth.service;
 
-import com.project.milkcollection.auth.dto.request.CreateRoleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateRoleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateRoleStatusRequest;
+import com.project.milkcollection.auth.dto.request.role.CreateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleStatusRequest;
 import com.project.milkcollection.auth.dto.response.RoleResponse;
 
 import java.util.List;

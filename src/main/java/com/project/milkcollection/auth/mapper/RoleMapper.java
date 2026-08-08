@@ -1,7 +1,7 @@
 package com.project.milkcollection.auth.mapper;
 
-import com.project.milkcollection.auth.dto.request.CreateRoleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.CreateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleRequest;
 import com.project.milkcollection.auth.dto.response.RoleResponse;
 import com.project.milkcollection.auth.entity.Role;
 import org.mapstruct.Mapper;

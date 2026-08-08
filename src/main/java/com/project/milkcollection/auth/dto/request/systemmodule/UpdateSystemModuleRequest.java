@@ -1,4 +1,4 @@
-package com.project.milkcollection.auth.dto.request;
+package com.project.milkcollection.auth.dto.request.systemmodule;
 
 import com.project.milkcollection.common.constants.RegexConstants;
 import jakarta.validation.constraints.NotBlank;

@@ -1,8 +1,8 @@
 package com.project.milkcollection.auth.service.impl;
 
-import com.project.milkcollection.auth.dto.request.CreateSystemModuleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateSystemModuleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateSystemModuleStatusRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.CreateSystemModuleRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleStatusRequest;
 import com.project.milkcollection.auth.dto.response.SystemModuleResponse;
 import com.project.milkcollection.auth.entity.SystemModule;
 import com.project.milkcollection.auth.mapper.SystemModuleMapper;

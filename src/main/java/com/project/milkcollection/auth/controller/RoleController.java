@@ -1,8 +1,8 @@
 package com.project.milkcollection.auth.controller;
 
-import com.project.milkcollection.auth.dto.request.CreateRoleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateRoleRequest;
-import com.project.milkcollection.auth.dto.request.UpdateRoleStatusRequest;
+import com.project.milkcollection.auth.dto.request.role.CreateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleStatusRequest;
 import com.project.milkcollection.auth.dto.response.RoleResponse;
 import com.project.milkcollection.auth.service.RoleService;
 import com.project.milkcollection.common.constants.ResponseMessage;

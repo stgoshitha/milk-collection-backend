@@ -1,11 +1,11 @@
-package com.project.milkcollection.auth.dto.request;
+package com.project.milkcollection.auth.dto.request.role;
 
 import com.project.milkcollection.common.constants.RegexConstants;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record CreateRoleRequest(
+public record UpdateRoleRequest(
 
         @NotBlank(message = "Role code is required")
         @Pattern(
@@ -24,6 +24,5 @@ public record CreateRoleRequest(
 
         @Size(max = 225, message = "Description cannot exceed 225 characters")
         String description
-
 ) {
 }
