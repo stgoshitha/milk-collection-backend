@@ -20,8 +20,6 @@ public final class SecurityConstants {
     public static final String TOKEN_TYPE = "Bearer";
 
     // Authentication Endpoints
-    public static final String AUTH_BASE_URL = "/api/v1/auth";
-
     public static final String LOGIN_ENDPOINT = "/login";
     public static final String REFRESH_ENDPOINT = "/refresh";
     public static final String LOGOUT_ENDPOINT = "/logout";
@@ -31,9 +29,14 @@ public final class SecurityConstants {
 
     // Roles
     public static final String ROLE_PREFIX = "ROLE_";
-    public static final String ROLE_BASE_URL = "/api/v1/roles";
 
     // Password
     public static final int BCRYPT_STRENGTH = 12;
+
+    // Base URL
+    public static final String AUTH_BASE_URL = "/api/v1/auth";
+    public static final String ROLE_BASE_URL = "/api/v1/roles";
+    public static final String SYSTEM_MODULE_BASE_URL = "/api/v1/system-modules";
+
 
 }

@@ -42,4 +42,9 @@ public final class ResponseMessage {
     public static final String ROLE_DEACTIVATED_SUCCESSFULLY = "Role deactivated successfully";
     public static final String ROLE_STATUS_ALREADY_UPDATED = "Role already has the requested status";
     public static final String ROLE_ALREADY_DELETED = "Role is already inactive";
+
+    // System module response messages
+    public static final String SYSTEM_MODULE_NAME_ALREADY_EXISTS = "Module name already exists";
+    public static final String SYSTEM_MODULE_NOT_FOUND = "Module not found";
+    public static final String SYSTEM_MODULE_STATUS_ALREADY_UPDATED = "Module status is already set to the requested status";
 }
