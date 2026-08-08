@@ -24,14 +24,17 @@ public interface RoleMapper {
     @Mapping(target = "updatedAt", ignore = true)
     Role toEntity(CreateRoleRequest request);
 
-
     // Convert Role entity to response DTO
     RoleResponse toResponse(Role role);
-
 
     // Convert list of Role entities to response DTO list
     List<RoleResponse> toResponseList(List<Role> roles);
 
+    // Update existing Role entity from update request
+    @Mapping(target = "roleId", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     void updateEntity(UpdateRoleRequest updateRoleRequest, @MappingTarget Role role);
 
 }
