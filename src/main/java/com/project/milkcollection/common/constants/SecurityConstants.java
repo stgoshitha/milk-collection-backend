@@ -37,6 +37,7 @@ public final class SecurityConstants {
     public static final String AUTH_BASE_URL = "/api/v1/auth";
     public static final String ROLE_BASE_URL = "/api/v1/roles";
     public static final String SYSTEM_MODULE_BASE_URL = "/api/v1/system-modules";
+    public static final String PERMISSION_BASE_URL = "/api/v1/permissions";
 
 
 }

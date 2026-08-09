@@ -110,4 +110,10 @@ public final class RegexConstants {
     public static final String SYSTEM_MODULE_ICON =
             "^[A-Za-z][A-Za-z0-9]*$";
 
+    /**
+     * System module icon
+     *
+     */
+    public static final String PERMISSION_NAME =
+            "^[A-Z]+(?:_[A-Z]+)*$";
 }

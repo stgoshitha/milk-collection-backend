@@ -47,4 +47,10 @@ public final class ResponseMessage {
     public static final String SYSTEM_MODULE_NAME_ALREADY_EXISTS = "Module name already exists";
     public static final String SYSTEM_MODULE_NOT_FOUND = "Module not found";
     public static final String SYSTEM_MODULE_STATUS_ALREADY_UPDATED = "Module status is already set to the requested status";
+
+    // Permission response messages
+    public static final String PERMISSION_NOT_FOUND = "Permission not found";
+    public static final String PERMISSION_NAME_ALREADY_EXISTS = "Permission name already exists";
+    public static final String PERMISSION_STATUS_ALREADY_UPDATED = "Permission status is already updated";
+    public static final String MODULE_NOT_FOUND ="System module not found";
 }
