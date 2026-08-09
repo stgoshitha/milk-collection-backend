@@ -26,10 +26,10 @@ public class RoleController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<RoleResponse>> createRole(
-            @Valid @RequestBody CreateRoleRequest request
+            @Valid @RequestBody CreateRoleRequest createRoleRequest
     ) {
 
-        RoleResponse response = roleService.createRole(request);
+        RoleResponse response = roleService.createRole(createRoleRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

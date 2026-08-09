@@ -29,7 +29,8 @@ public class RoleServiceImpl implements RoleService {
     // Create a new role
     @Override
     @Transactional
-    public RoleResponse createRole(CreateRoleRequest createRoleRequest) {
+    public RoleResponse createRole(
+            CreateRoleRequest createRoleRequest) {
 
         validateRoleCode(createRoleRequest.roleCode(), null);
         validateRoleName(createRoleRequest.roleName(), null);
