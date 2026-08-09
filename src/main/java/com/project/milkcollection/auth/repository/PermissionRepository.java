@@ -15,4 +15,7 @@ public interface PermissionRepository extends JpaRepository<Permission, UUID> {
     // Check whether permission name already exists
     boolean existsByPermissionName(String permissionName);
 
+    // Find all permissions belonging to a system module
+    List<Permission> findBySystemModuleSystemModuleId(UUID moduleId);
+
 }

@@ -118,4 +118,21 @@ public class PermissionController {
                 )
         );
     }
+
+    // Get all permissions belonging to a system module
+    @GetMapping("/{systemModuleId}/permissions")
+    public ResponseEntity<ApiResponse<List<PermissionResponse>>> getModulePermissions(
+            @PathVariable UUID systemModuleId) {
+
+        List<PermissionResponse> permissions =
+                permissionService.getPermissionsBySystemModule(systemModuleId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "System module permissions "
+                                + ResponseMessage.FETCH_SUCCESSFULLY,
+                        permissions
+                )
+        );
+    }
 }

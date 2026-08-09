@@ -4,6 +4,7 @@ import com.project.milkcollection.auth.dto.request.rolepermission.UpdateRolePerm
 import com.project.milkcollection.auth.dto.response.RolePermissionResponse;
 import com.project.milkcollection.auth.service.RolePermissionService;
 import com.project.milkcollection.common.constants.ResponseMessage;
+import com.project.milkcollection.common.constants.SecurityConstants;
 import com.project.milkcollection.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/roles")
+@RequestMapping(SecurityConstants.ROLE_BASE_URL)
 @RequiredArgsConstructor
 public class RolePermissionController {
 

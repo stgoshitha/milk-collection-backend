@@ -136,6 +136,25 @@ public class PermissionServiceImpl implements PermissionService {
         return permissionMapper.toResponse(updatedPermission);
     }
 
+    // Get all permissions belonging to a system module
+    @Override
+    @Transactional(readOnly = true)
+    public List<PermissionResponse> getPermissionsBySystemModule(UUID systemModuleId) {
+
+        // Check whether the system module exists
+        if (!systemModuleRepository.existsById(systemModuleId)) {
+            throw new ResourceNotFoundException(
+                    ResponseMessage.MODULE_NOT_FOUND
+            );
+        }
+
+        // Find permissions belonging to the module
+        List<Permission> permissions =
+                permissionRepository.findBySystemModuleSystemModuleId(systemModuleId);
+
+        return permissionMapper.toResponseList(permissions);
+    }
+
     // Find permission by ID or throw exception
     private Permission findPermissionById(UUID permissionId) {
 

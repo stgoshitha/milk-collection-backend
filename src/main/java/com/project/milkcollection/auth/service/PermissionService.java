@@ -29,4 +29,8 @@ public interface PermissionService {
             UUID permissionId,
             UpdatePermissionStatusRequest updatePermissionStatusRequest
     );
+
+    List<PermissionResponse> getPermissionsBySystemModule(
+            UUID systemModuleId
+    );
 }
