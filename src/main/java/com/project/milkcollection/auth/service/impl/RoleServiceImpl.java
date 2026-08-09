@@ -29,12 +29,12 @@ public class RoleServiceImpl implements RoleService {
     // Create a new role
     @Override
     @Transactional
-    public RoleResponse createRole(CreateRoleRequest request) {
+    public RoleResponse createRole(CreateRoleRequest createRoleRequest) {
 
-        validateRoleCode(request.roleCode(), null);
-        validateRoleName(request.roleName(), null);
+        validateRoleCode(createRoleRequest.roleCode(), null);
+        validateRoleName(createRoleRequest.roleName(), null);
 
-        Role role = roleMapper.toEntity(request);
+        Role role = roleMapper.toEntity(createRoleRequest);
         role.setStatus(CommonStatus.ACTIVE);
 
         Role savedRole = roleRepository.saveAndFlush(role);
@@ -57,20 +57,24 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true)
     public List<RoleResponse> getAllRoles() {
 
-        return roleMapper.toResponseList(roleRepository.findAll());
+        return roleMapper.toResponseList(
+                roleRepository.findAll()
+        );
     }
 
     // Update role details
     @Override
     @Transactional
-    public RoleResponse updateRole(UUID roleId, UpdateRoleRequest request) {
+    public RoleResponse updateRole(
+            UUID roleId,
+            UpdateRoleRequest updateRoleRequest) {
 
         Role role = findRoleById(roleId);
 
-        validateRoleCode(request.roleCode(), role);
-        validateRoleName(request.roleName(), role);
+        validateRoleCode(updateRoleRequest.roleCode(), role);
+        validateRoleName(updateRoleRequest.roleName(), role);
 
-        roleMapper.updateEntity(request, role);
+        roleMapper.updateEntity(updateRoleRequest, role);
 
         Role updatedRole = roleRepository.save(role);
 
@@ -82,17 +86,17 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public RoleResponse updateRoleStatus(
             UUID roleId,
-            UpdateRoleStatusRequest request) {
+            UpdateRoleStatusRequest updateRoleStatusRequest) {
 
         Role role = findRoleById(roleId);
 
-        if (role.getStatus() == request.status()) {
+        if (role.getStatus() == updateRoleStatusRequest.status()) {
             throw new ConflictException(
                     ResponseMessage.ROLE_STATUS_ALREADY_UPDATED
             );
         }
 
-        role.setStatus(request.status());
+        role.setStatus(updateRoleStatusRequest.status());
 
         Role updatedRole = roleRepository.save(role);
 
@@ -123,18 +127,23 @@ public class RoleServiceImpl implements RoleService {
     private Role findRoleById(UUID roleId) {
 
         return roleRepository.findById(roleId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(
                                 ResponseMessage.ROLE_NOT_FOUND
                         )
                 );
     }
 
     // Validate unique role code
-    private void validateRoleCode(String roleCode, Role existingRole) {
+    private void validateRoleCode(
+            String roleCode,
+            Role existingRole) {
 
-        boolean changed = existingRole == null
-                || !existingRole.getRoleCode().equalsIgnoreCase(roleCode);
+        boolean changed =
+                existingRole == null
+                        || !existingRole
+                        .getRoleCode()
+                        .equalsIgnoreCase(roleCode);
 
         if (changed && roleRepository.existsByRoleCode(roleCode)) {
             throw new ConflictException(
@@ -144,10 +153,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     // Validate unique role name
-    private void validateRoleName(String roleName, Role existingRole) {
+    private void validateRoleName(
+            String roleName,
+            Role existingRole) {
 
-        boolean changed = existingRole == null
-                || !existingRole.getRoleName().equalsIgnoreCase(roleName);
+        boolean changed =
+                existingRole == null
+                        || !existingRole
+                        .getRoleName()
+                        .equalsIgnoreCase(roleName);
 
         if (changed && roleRepository.existsByRoleName(roleName)) {
             throw new ConflictException(

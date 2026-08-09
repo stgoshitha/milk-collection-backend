@@ -30,16 +30,21 @@ public class SystemModuleServiceImpl implements SystemModuleService {
     public SystemModuleResponse createSystemModule(
             CreateSystemModuleRequest createSystemModuleRequest) {
 
-        validateSystemModuleName(createSystemModuleRequest.systemModuleName(), null);
+        validateSystemModuleName(
+                createSystemModuleRequest.systemModuleName(),
+                null
+        );
 
         Integer nextDisplayOrder = getNextDisplayOrder();
 
-        SystemModule systemModule = systemModuleMapper.toEntity(createSystemModuleRequest);
+        SystemModule systemModule =
+                systemModuleMapper.toEntity(createSystemModuleRequest);
 
         systemModule.setDisplayOrder(nextDisplayOrder);
         systemModule.setStatus(CommonStatus.ACTIVE);
 
-        SystemModule savedModule = systemModuleRepository.saveAndFlush(systemModule);
+        SystemModule savedModule =
+                systemModuleRepository.saveAndFlush(systemModule);
 
         return systemModuleMapper.toResponse(savedModule);
     }
@@ -47,9 +52,11 @@ public class SystemModuleServiceImpl implements SystemModuleService {
     // Get a system module by ID
     @Override
     @Transactional(readOnly = true)
-    public SystemModuleResponse getSystemModuleById(UUID systemModuleId) {
+    public SystemModuleResponse getSystemModuleById(
+            UUID systemModuleId) {
 
-        SystemModule systemModule = findSystemModuleById(systemModuleId);
+        SystemModule systemModule =
+                findSystemModuleById(systemModuleId);
 
         return systemModuleMapper.toResponse(systemModule);
     }
@@ -77,13 +84,21 @@ public class SystemModuleServiceImpl implements SystemModuleService {
             UUID systemModuleId,
             UpdateSystemModuleRequest updateSystemModuleRequest) {
 
-        SystemModule systemModule = findSystemModuleById(systemModuleId);
+        SystemModule systemModule =
+                findSystemModuleById(systemModuleId);
 
-        validateSystemModuleName(updateSystemModuleRequest.systemModuleName(), systemModule);
+        validateSystemModuleName(
+                updateSystemModuleRequest.systemModuleName(),
+                systemModule
+        );
 
-        systemModuleMapper.updateEntity(updateSystemModuleRequest, systemModule);
+        systemModuleMapper.updateEntity(
+                updateSystemModuleRequest,
+                systemModule
+        );
 
-        SystemModule updatedModule = systemModuleRepository.save(systemModule);
+        SystemModule updatedModule =
+                systemModuleRepository.save(systemModule);
 
         return systemModuleMapper.toResponse(updatedModule);
     }
@@ -95,7 +110,8 @@ public class SystemModuleServiceImpl implements SystemModuleService {
             UUID systemModuleId,
             UpdateSystemModuleStatusRequest request) {
 
-        SystemModule systemModule = findSystemModuleById(systemModuleId);
+        SystemModule systemModule =
+                findSystemModuleById(systemModuleId);
 
         if (systemModule.getStatus() == request.status()) {
             throw new ConflictException(
@@ -105,23 +121,28 @@ public class SystemModuleServiceImpl implements SystemModuleService {
 
         systemModule.setStatus(request.status());
 
-        SystemModule updatedModule = systemModuleRepository.save(systemModule);
+        SystemModule updatedModule =
+                systemModuleRepository.save(systemModule);
 
         return systemModuleMapper.toResponse(updatedModule);
     }
 
     // Update system module order
     @Override
-    public void updateSystemModuleOrder(UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest) {
+    public void updateSystemModuleOrder(
+            UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest) {
 
-        List<UpdateSystemModuleOrderItem> moduleOrderItems = updateSystemModuleOrderRequest.systemModules();
+        List<UpdateSystemModuleOrderItem> moduleOrderItems =
+                updateSystemModuleOrderRequest.systemModules();
 
-        for(UpdateSystemModuleOrderItem moduleOrderItem : moduleOrderItems){
+        for (UpdateSystemModuleOrderItem moduleOrderItem : moduleOrderItems) {
 
-            SystemModule systemModule = findSystemModuleById(moduleOrderItem.systemModuleId());
+            SystemModule systemModule =
+                    findSystemModuleById(moduleOrderItem.systemModuleId());
 
-            systemModule.setDisplayOrder(moduleOrderItem.displayOrder());
-
+            systemModule.setDisplayOrder(
+                    moduleOrderItem.displayOrder()
+            );
         }
 
         systemModuleRepository.flush();
@@ -131,8 +152,8 @@ public class SystemModuleServiceImpl implements SystemModuleService {
     private SystemModule findSystemModuleById(UUID systemModuleId) {
 
         return systemModuleRepository.findById(systemModuleId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(
                                 ResponseMessage.SYSTEM_MODULE_NOT_FOUND
                         )
                 );
@@ -143,10 +164,16 @@ public class SystemModuleServiceImpl implements SystemModuleService {
             String systemModuleName,
             SystemModule existingSystemModule) {
 
-        boolean changed = existingSystemModule == null
-                || !existingSystemModule.getSystemModuleName().equalsIgnoreCase(systemModuleName);
+        boolean changed =
+                existingSystemModule == null
+                        || !existingSystemModule
+                        .getSystemModuleName()
+                        .equalsIgnoreCase(systemModuleName);
 
-        if (changed && systemModuleRepository.existsBySystemModuleName(systemModuleName)) {
+        if (changed
+                && systemModuleRepository
+                .existsBySystemModuleName(systemModuleName)) {
+
             throw new ConflictException(
                     ResponseMessage.SYSTEM_MODULE_NAME_ALREADY_EXISTS
             );

@@ -30,13 +30,15 @@ public class SystemModuleController {
     public ResponseEntity<ApiResponse<SystemModuleResponse>> createSystemModule(
             @Valid @RequestBody CreateSystemModuleRequest request) {
 
-        SystemModuleResponse systemModule = systemModuleService.createSystemModule(request);
+        SystemModuleResponse systemModule =
+                systemModuleService.createSystemModule(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
                         ApiResponse.success(
-                                "System module " + ResponseMessage.CREATED_SUCCESSFULLY,
+                                "System module "
+                                        + ResponseMessage.CREATED_SUCCESSFULLY,
                                 systemModule
                         )
                 );
@@ -52,8 +54,10 @@ public class SystemModuleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        "System module " + ResponseMessage.FETCH_SUCCESSFULLY,
-                        systemModule)
+                        "System module "
+                                + ResponseMessage.FETCH_SUCCESSFULLY,
+                        systemModule
+                )
         );
     }
 
@@ -66,8 +70,10 @@ public class SystemModuleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        "System modules " + ResponseMessage.FETCH_SUCCESSFULLY,
-                        systemModules)
+                        "System modules "
+                                + ResponseMessage.FETCH_SUCCESSFULLY,
+                        systemModules
+                )
         );
     }
 
@@ -78,11 +84,15 @@ public class SystemModuleController {
             @Valid @RequestBody UpdateSystemModuleRequest updateSystemModuleRequest) {
 
         SystemModuleResponse systemModule =
-                systemModuleService.updateSystemModule(systemModuleId, updateSystemModuleRequest);
+                systemModuleService.updateSystemModule(
+                        systemModuleId,
+                        updateSystemModuleRequest
+                );
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        "System module " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        "System module "
+                                + ResponseMessage.UPDATED_SUCCESSFULLY,
                         systemModule
                 )
         );
@@ -102,7 +112,8 @@ public class SystemModuleController {
 
         return ResponseEntity.ok(
                 ApiResponse.success(
-                        "System module status " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        "System module status "
+                                + ResponseMessage.UPDATED_SUCCESSFULLY,
                         systemModule
                 )
         );
@@ -113,7 +124,9 @@ public class SystemModuleController {
     public ResponseEntity<ApiResponse<Void>> updateModuleOrder(
             @Valid @RequestBody UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest) {
 
-        systemModuleService.updateSystemModuleOrder(updateSystemModuleOrderRequest);
+        systemModuleService.updateSystemModuleOrder(
+                updateSystemModuleOrderRequest
+        );
 
         return ResponseEntity.ok(
                 ApiResponse.success(

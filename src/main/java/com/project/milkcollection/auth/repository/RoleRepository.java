@@ -23,9 +23,15 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
     boolean existsByRoleName(String roleName);
 
     // Check whether another role already uses the given role code.
-    boolean existsByRoleCodeIgnoreCaseAndRoleIdNot(String roleCode, UUID roleId);
+    boolean existsByRoleCodeIgnoreCaseAndRoleIdNot(
+            String roleCode,
+            UUID roleId
+    );
 
     // Check whether another role already uses the given role name.
-    boolean existsByRoleNameIgnoreCaseAndRoleIdNot(String roleName, UUID roleId);
+    boolean existsByRoleNameIgnoreCaseAndRoleIdNot(
+            String roleName,
+            UUID roleId
+    );
 
 }

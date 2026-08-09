@@ -10,9 +10,13 @@ import java.util.UUID;
 
 public interface PermissionService {
 
-    PermissionResponse createPermission(CreatePermissionRequest createPermissionRequest);
+    PermissionResponse createPermission(
+            CreatePermissionRequest createPermissionRequest
+    );
 
-    PermissionResponse getPermissionById(UUID permissionId);
+    PermissionResponse getPermissionById(
+            UUID permissionId
+    );
 
     List<PermissionResponse> getAllPermissions();
 

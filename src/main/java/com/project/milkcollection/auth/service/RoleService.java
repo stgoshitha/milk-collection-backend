@@ -10,15 +10,27 @@ import java.util.UUID;
 
 public interface RoleService {
 
-    RoleResponse createRole(CreateRoleRequest createRoleRequest);
+    RoleResponse createRole(
+            CreateRoleRequest createRoleRequest
+    );
 
-    RoleResponse getRoleById(UUID roleId);
+    RoleResponse getRoleById(
+            UUID roleId
+    );
 
     List<RoleResponse> getAllRoles();
 
-    RoleResponse updateRole(UUID roleId, UpdateRoleRequest request);
+    RoleResponse updateRole(
+            UUID roleId,
+            UpdateRoleRequest updateRoleRequest
+    );
 
-    RoleResponse updateRoleStatus(UUID roleId, UpdateRoleStatusRequest updateRoleStatusRequest);
+    RoleResponse updateRoleStatus(
+            UUID roleId,
+            UpdateRoleStatusRequest updateRoleStatusRequest
+    );
 
-    RoleResponse deleteRole(UUID roleId);
+    RoleResponse deleteRole(
+            UUID roleId
+    );
 }

@@ -11,16 +11,27 @@ import java.util.UUID;
 
 public interface SystemModuleService {
 
-    SystemModuleResponse createSystemModule(CreateSystemModuleRequest createSystemModuleRequest);
+    SystemModuleResponse createSystemModule(
+            CreateSystemModuleRequest createSystemModuleRequest
+    );
 
-    SystemModuleResponse getSystemModuleById(UUID systemModuleId);
+    SystemModuleResponse getSystemModuleById(
+            UUID systemModuleId
+    );
 
     List<SystemModuleResponse> getAllSystemModules();
 
-    SystemModuleResponse updateSystemModule(UUID systemModuleId, UpdateSystemModuleRequest updateSystemModuleRequest);
+    SystemModuleResponse updateSystemModule(
+            UUID systemModuleId,
+            UpdateSystemModuleRequest updateSystemModuleRequest
+    );
 
-    SystemModuleResponse updateModuleStatus(UUID systemModuleId, UpdateSystemModuleStatusRequest request);
+    SystemModuleResponse updateModuleStatus(
+            UUID systemModuleId,
+            UpdateSystemModuleStatusRequest updateSystemModuleStatusRequest
+    );
 
-    void updateSystemModuleOrder(UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest);
-
+    void updateSystemModuleOrder(
+            UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest
+    );
 }
