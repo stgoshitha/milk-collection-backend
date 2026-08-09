@@ -1,6 +1,7 @@
 package com.project.milkcollection.auth.service;
 
 import com.project.milkcollection.auth.dto.request.systemmodule.CreateSystemModuleRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleOrderRequest;
 import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleRequest;
 import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleStatusRequest;
 import com.project.milkcollection.auth.dto.response.SystemModuleResponse;
@@ -19,5 +20,7 @@ public interface SystemModuleService {
     SystemModuleResponse updateSystemModule(UUID systemModuleId, UpdateSystemModuleRequest updateSystemModuleRequest);
 
     SystemModuleResponse updateModuleStatus(UUID systemModuleId, UpdateSystemModuleStatusRequest request);
+
+    void updateSystemModuleOrder(UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest);
 
 }

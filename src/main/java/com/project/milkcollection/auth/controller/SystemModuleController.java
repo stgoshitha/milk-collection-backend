@@ -1,6 +1,7 @@
 package com.project.milkcollection.auth.controller;
 
 import com.project.milkcollection.auth.dto.request.systemmodule.CreateSystemModuleRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleOrderRequest;
 import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleRequest;
 import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleStatusRequest;
 import com.project.milkcollection.auth.dto.response.SystemModuleResponse;
@@ -103,6 +104,21 @@ public class SystemModuleController {
                 ApiResponse.success(
                         "System module status " + ResponseMessage.UPDATED_SUCCESSFULLY,
                         systemModule
+                )
+        );
+    }
+
+    // Update system module order
+    @PatchMapping("/order")
+    public ResponseEntity<ApiResponse<Void>> updateModuleOrder(
+            @Valid @RequestBody UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest) {
+
+        systemModuleService.updateSystemModuleOrder(updateSystemModuleOrderRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "System module order "
+                                + ResponseMessage.UPDATED_SUCCESSFULLY
                 )
         );
     }

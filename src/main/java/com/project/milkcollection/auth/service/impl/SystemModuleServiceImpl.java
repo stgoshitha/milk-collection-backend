@@ -1,8 +1,6 @@
 package com.project.milkcollection.auth.service.impl;
 
-import com.project.milkcollection.auth.dto.request.systemmodule.CreateSystemModuleRequest;
-import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleRequest;
-import com.project.milkcollection.auth.dto.request.systemmodule.UpdateSystemModuleStatusRequest;
+import com.project.milkcollection.auth.dto.request.systemmodule.*;
 import com.project.milkcollection.auth.dto.response.SystemModuleResponse;
 import com.project.milkcollection.auth.entity.SystemModule;
 import com.project.milkcollection.auth.mapper.SystemModuleMapper;
@@ -110,6 +108,23 @@ public class SystemModuleServiceImpl implements SystemModuleService {
         SystemModule updatedModule = systemModuleRepository.save(systemModule);
 
         return systemModuleMapper.toResponse(updatedModule);
+    }
+
+    // Update system module order
+    @Override
+    public void updateSystemModuleOrder(UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest) {
+
+        List<UpdateSystemModuleOrderItem> moduleOrderItems = updateSystemModuleOrderRequest.systemModules();
+
+        for(UpdateSystemModuleOrderItem moduleOrderItem : moduleOrderItems){
+
+            SystemModule systemModule = findSystemModuleById(moduleOrderItem.systemModuleId());
+
+            systemModule.setDisplayOrder(moduleOrderItem.displayOrder());
+
+        }
+
+        systemModuleRepository.flush();
     }
 
     // Find a system module by ID or throw an exception
