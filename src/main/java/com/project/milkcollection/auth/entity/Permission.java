@@ -37,6 +37,6 @@ public class Permission extends BaseEntity {
             nullable = false,
             foreignKey = @ForeignKey(name = "fk_permission_module")
     )
-    private SystemModule module;
+    private SystemModule systemModule;
 
 }
