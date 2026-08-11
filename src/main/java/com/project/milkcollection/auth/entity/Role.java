@@ -5,6 +5,8 @@ import com.project.milkcollection.common.enums.CommonStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,5 +35,12 @@ public class Role extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private CommonStatus status;
+
+    @OneToMany(
+            mappedBy = "role",
+            fetch = FetchType.LAZY
+    )
+    @Builder.Default
+    private List<RolePermission> rolePermissions = new ArrayList<>();
 
 }
