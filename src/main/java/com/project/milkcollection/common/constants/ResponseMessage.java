@@ -18,22 +18,25 @@ public final class ResponseMessage {
 
 
     // Authentication response messages
-    public static final String LOGIN_SUCCESSFUL = "Login successful";
-    public static final String LOGOUT_SUCCESSFUL = "Logout successful";
-    public static final String REFRESH_TOKEN_SUCCESSFUL = "Token refreshed successfully";
-
+    public static final String LOGIN_SUCCESSFULLY = "Login successful";
+    public static final String LOGOUT_SUCCESSFULLY = "Logout successful";
+    public static final String TOKEN_REFRESH_SUCCESSFULLY = "Token refreshed successfully";
     public static final String INVALID_CREDENTIALS = "Invalid username or password";
+    public static final String INVALID_TOKEN = "Invalid or expired token";
+    public static final String INVALID_REFRESH_TOKEN = "Invalid refresh token";
+    public static final String REFRESH_TOKEN_EXPIRED = "Refresh token has expired";
+    public static final String TOKEN_REQUIRED = "Authentication token is required";
+    public static final String ACCESS_DENIED = "You do not have permission to access this resource";
+
+    // User response messages
     public static final String USER_NOT_FOUND = "User not found";
     public static final String USER_ALREADY_EXISTS = "User already exists";
-
+    public static final String USERNAME_ALREADY_EXISTS = "Username already exists";
+    public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
+    public static final String ACCOUNT_NOT_ACTIVE = "User account is not active";
     public static final String ACCOUNT_DISABLED = "User account is disabled";
     public static final String ACCOUNT_LOCKED = "User account is locked";
-
-    public static final String INVALID_TOKEN = "Invalid or expired token";
     public static final String TOKEN_EXPIRED = "Token has expired";
-    public static final String TOKEN_REQUIRED = "Authentication token is required";
-
-    public static final String ACCESS_DENIED = "You do not have permission to access this resource";
 
     // Role response messages
     public static final String ROLE_NOT_FOUND = "Role not found";
