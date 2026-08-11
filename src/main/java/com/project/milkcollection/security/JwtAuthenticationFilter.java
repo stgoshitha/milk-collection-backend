@@ -1,11 +1,11 @@
 package com.project.milkcollection.security;
 
+import com.project.milkcollection.common.constants.SecurityConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 // Filter responsible for validating JWT token on every request.
 @Component
@@ -24,7 +25,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
-
     // Execute JWT validation before processing each request.
     @Override
     protected void doFilterInternal(
@@ -33,56 +33,60 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-
-        String authHeader = request.getHeader("Authorization");
-
+        String authHeader = request.getHeader(SecurityConstants.AUTHORIZATION_HEADER);
 
         // Continue request if JWT header is missing.
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-
         String token = authHeader.substring(7);
 
+        try {
 
-        String userId = jwtService.extractUserId(token);
+            // Extract username from JWT.
+            String username = jwtService.extractUsername(token);
 
+            // Continue only if username exists and user
+            // has not already been authenticated.
+            if (username != null
+                    && SecurityContextHolder
+                    .getContext()
+                    .getAuthentication() == null) {
 
-        // Set authentication only if user is not already authenticated.
-        if (userId != null &&
-                SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails =
+                        userDetailsService.loadUserByUsername(username);
 
+                UUID userId = jwtService.extractUserId(token);
 
-            UserDetails userDetails =
-                    userDetailsService.loadUserByUsername(
-                            jwtService.extractUsername(token)
+                // Validate token against the authenticated user.
+                if (jwtService.isTokenValid(token, userId)) {
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+
+                    authentication.setDetails(
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(request)
                     );
 
-
-            if (jwtService.isTokenValid(token, userId)) {
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-
-
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
-
-
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(authentication);
+                }
             }
-        }
 
+        } catch (Exception exception) {
+
+            // Invalid / expired JWT.
+            // Do not authenticate the request.
+            SecurityContextHolder.clearContext();
+        }
 
         filterChain.doFilter(request, response);
     }

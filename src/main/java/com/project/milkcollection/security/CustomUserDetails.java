@@ -1,5 +1,7 @@
 package com.project.milkcollection.security;
 
+import com.project.milkcollection.auth.entity.Permission;
+import com.project.milkcollection.auth.entity.RolePermission;
 import com.project.milkcollection.auth.entity.User;
 import com.project.milkcollection.auth.entity.enums.UserStatus;
 import com.project.milkcollection.common.constants.SecurityConstants;
@@ -9,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,15 +25,47 @@ public class CustomUserDetails implements UserDetails {
     // Convert user role into Spring Security authorities
     @Override
     @NonNull
-    public Collection<? extends GrantedAuthority> getAuthorities(){
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        String rolePrefix = SecurityConstants.ROLE_PREFIX;
+        List<GrantedAuthority> authorities = new ArrayList<>();
 
-        return List.of(
-                new SimpleGrantedAuthority(
-                        rolePrefix + user.getRole().getRoleName()
-                )
+        /*
+         * Add role authority.
+         *
+         * Example:
+         * ADMIN -> ROLE_ADMIN
+         * COLLECTOR -> ROLE_COLLECTOR
+         */
+        String roleAuthority =
+                SecurityConstants.ROLE_PREFIX
+                        + user.getRole().getRoleName();
+
+        authorities.add(
+                new SimpleGrantedAuthority(roleAuthority)
         );
+
+        /*
+         * Add permission authorities.
+         *
+         * Example:
+         * USER_VIEW
+         * USER_CREATE
+         * FARMER_VIEW
+         * FARMER_CREATE
+         */
+        for (RolePermission rolePermission :
+                user.getRole().getRolePermissions()) {
+
+            Permission permission = rolePermission.getPermission();
+
+            authorities.add(
+                    new SimpleGrantedAuthority(
+                            permission.getPermissionName()
+                    )
+            );
+        }
+
+        return authorities;
     }
 
     // Return encrypted password for authentication verification
