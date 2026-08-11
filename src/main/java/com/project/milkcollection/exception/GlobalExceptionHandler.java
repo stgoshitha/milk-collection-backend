@@ -1,9 +1,11 @@
 package com.project.milkcollection.exception;
 
+import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.dto.ApiError;
 import com.project.milkcollection.common.response.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +55,19 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiErrorResponse.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthorizationDeniedException(
+            final AuthorizationDeniedException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(
+                        ApiErrorResponse.of(
+                                ResponseMessage.ACCESS_DENIED
+                        )
+                );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
