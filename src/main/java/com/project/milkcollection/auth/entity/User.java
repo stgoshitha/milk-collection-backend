@@ -4,6 +4,8 @@ import com.project.milkcollection.auth.entity.enums.UserStatus;
 import com.project.milkcollection.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,7 +40,8 @@ public class User extends BaseEntity {
     private String profileImgUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="status", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name="status", nullable = false, columnDefinition = "user_status")
     private UserStatus status;
 
     @Column(name = "last_login")

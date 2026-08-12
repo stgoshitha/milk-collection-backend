@@ -4,6 +4,8 @@ import com.project.milkcollection.common.entity.BaseEntity;
 import com.project.milkcollection.common.enums.CommonStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -34,7 +36,8 @@ public class SystemModule extends BaseEntity {
     private String icon;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "status", nullable = false, columnDefinition = "common_status")
     private CommonStatus status;
 
 }

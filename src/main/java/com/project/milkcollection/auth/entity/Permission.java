@@ -4,6 +4,8 @@ import com.project.milkcollection.common.entity.BaseEntity;
 import com.project.milkcollection.common.enums.CommonStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.UUID;
 
@@ -28,7 +30,8 @@ public class Permission extends BaseEntity {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "status", nullable = false, columnDefinition = "common_status")
     private CommonStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
