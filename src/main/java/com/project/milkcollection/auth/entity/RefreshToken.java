@@ -22,7 +22,7 @@ public class RefreshToken extends CreatedOnlyEntity {
     private UUID refreshTokenId;
 
     @Column(name = "token", nullable = false, length = 500)
-    private String token;
+    private String tokenHash;
 
     @Column(name = "device_info", length = 225)
     private String deviceInfo;
@@ -32,6 +32,9 @@ public class RefreshToken extends CreatedOnlyEntity {
 
     @Column(name = "expiry_date", nullable = false)
     private LocalDateTime expiryDate;
+
+    @Column(name = "revoked_at")
+    private LocalDateTime revokedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
