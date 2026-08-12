@@ -23,6 +23,7 @@ CREATE TYPE common_status AS ENUM (
 -- =====================================================
 CREATE TABLE roles(
     role_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    role_code VARCHAR(50) NOT NULL UNIQUE,
     role_name VARCHAR(50) NOT NULL UNIQUE,
     description VARCHAR(255),
     status common_status NOT NULL DEFAULT 'ACTIVE',
@@ -121,6 +122,7 @@ CREATE TABLE refresh_tokens(
     device_info VARCHAR(255),
     ip_address VARCHAR(45),
     expiry_date TIMESTAMP NOT NULL,
+    revoked_at TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_refresh_token_user
@@ -157,12 +159,14 @@ ON refresh_tokens(expiry_date);
 -- =====================================================
 -- DEFAULT ROLES
 -- =====================================================
-INSERT INTO roles(role_name, description)
+INSERT INTO roles
+(role_code, role_name,description)
 VALUES
-('ADMIN','System Administrator'),
-('MANAGER','Collection Center Manager'),
-('COLLECTOR','Milk Collection Officer'),
-('ACCOUNTANT','Finance Officer');
+('ROLE_ADMIN','ADMIN','System Administrator'),
+('ROLE_MANAGER','MANAGER','Collection Center Manager'),
+('ROLE_COLLECTOR','COLLECTOR','Milk Collection Officer'),
+('ROLE_ACCOUNTANT', 'ACCOUNTANT','Finance Officer');
+
 
 -- =====================================================
 -- DEFAULT MODULES
