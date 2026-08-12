@@ -21,9 +21,11 @@ public final class SecurityConstants {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String TOKEN_TYPE = "Bearer";
     public static final long ACCESS_TOKEN_EXPIRATION = 15 * 60 * 1000L;
+    public static final long REFRESH_TOKEN_EXPIRATION = 30L * 24 * 60 * 60 * 1000;
     public static final String CLAIM_TOKEN_TYPE = "token_type";
     public static final String ACCESS_TOKEN = "ACCESS";
     public static final String REFRESH_TOKEN = "REFRESH";
+
 
     // Authentication Endpoints
     public static final String LOGIN_ENDPOINT = "/login";
