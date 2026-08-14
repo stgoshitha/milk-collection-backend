@@ -8,10 +8,14 @@ import com.project.milkcollection.auth.service.AuthService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.constants.SecurityConstants;
 import com.project.milkcollection.common.response.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SecurityConstants.AUTH_BASE_URL)
@@ -20,13 +24,17 @@ public class AuthController {
 
     private final AuthService authService;
 
-    //Authenticate user using username or email.
+    // Authenticate user using username or email.
     @PostMapping(SecurityConstants.LOGIN_ENDPOINT)
     public ResponseEntity<ApiResponse<LoginResponse>> login(
-            @Valid @RequestBody LoginRequest loginRequest) {
+            @Valid @RequestBody LoginRequest loginRequest,
+            HttpServletRequest httpServletRequest
+    ) {
 
-        LoginResponse loginResponse =
-                authService.login(loginRequest);
+        String ipAddress = httpServletRequest.getRemoteAddr();
+        String deviceInfo = httpServletRequest.getHeader("user-Agent");
+
+        LoginResponse loginResponse = authService.login(loginRequest, ipAddress, deviceInfo);
 
         return ResponseEntity.ok(
                 ApiResponse.success(
@@ -36,11 +44,10 @@ public class AuthController {
         );
     }
 
-    @PostMapping("/refresh")
+    @PostMapping(SecurityConstants.REFRESH_ENDPOINT)
     public ResponseEntity<ApiResponse<RefreshTokenResponse>> refreshToken(
             @Valid @RequestBody RefreshTokenRequest refreshTokenRequest
     ) {
-
         RefreshTokenResponse response =
                 authService.refreshToken(refreshTokenRequest);
 
@@ -52,4 +59,17 @@ public class AuthController {
         );
     }
 
+    @PostMapping(SecurityConstants.LOGOUT_ENDPOINT)
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @Valid @RequestBody RefreshTokenRequest refreshTokenRequest
+    ){
+
+        authService.logout(refreshTokenRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.LOGOUT_SUCCESSFULLY
+                )
+        );
+    }
 }

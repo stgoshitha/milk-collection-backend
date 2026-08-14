@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginResponse login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest, String ipAddress, String deviceInfo) {
 
         //Find user by username or email.
         User user =
@@ -110,6 +110,8 @@ public class AuthServiceImpl implements AuthService {
                 RefreshToken.builder()
                         .user(user)
                         .tokenHash(tokenHash)
+                        .ipAddress(ipAddress)
+                        .deviceInfo(deviceInfo)
                         .expiryDate(
                                 LocalDateTime.now()
                                         .plus(
@@ -194,10 +196,12 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
+        //Get the existing information
+        String deviceInfo = storedToken.getDeviceInfo();
+        String ipAddress = storedToken.getIpAddress();
+
         //Revoke old refresh token
         storedToken.setRevokedAt(LocalDateTime.now());
-
-        refreshTokenRepository.save(storedToken);
 
         //Generate new access token
         String newAccessToken =
@@ -224,6 +228,8 @@ public class AuthServiceImpl implements AuthService {
                 RefreshToken.builder()
                         .user(user)
                         .tokenHash(newTokenHash)
+                        .deviceInfo(deviceInfo)
+                        .ipAddress(ipAddress)
                         .expiryDate(
                                 LocalDateTime.now()
                                         .plus(
@@ -244,5 +250,45 @@ public class AuthServiceImpl implements AuthService {
                 SecurityConstants.TOKEN_TYPE,
                 SecurityConstants.ACCESS_TOKEN_EXPIRATION
         );
+    }
+
+    @Override
+    @Transactional
+    public void logout(RefreshTokenRequest refreshTokenRequest) {
+
+        String  refreshToken = refreshTokenRequest.refreshToken();
+
+        //Validate that the supplied token is actually a valid refresh token
+        if(!jwtService.isRefreshTokenValid(refreshToken)){
+            throw new UnauthorizedException(
+                    ResponseMessage.INVALID_REFRESH_TOKEN
+            );
+        }
+
+        //Hash the token
+        String tokenHash = refreshTokenHashService.hash(refreshToken);
+
+        //find the token from DB
+        RefreshToken storedRefreshToken = refreshTokenRepository
+                .findByTokenHash(tokenHash)
+                .orElseThrow(() ->
+                        new UnauthorizedException(
+                                ResponseMessage.INVALID_REFRESH_TOKEN
+                        )
+                );
+
+        //check whether the token is already revoked
+        if (storedRefreshToken.getRevokedAt() != null) {
+
+            throw new UnauthorizedException(
+                    ResponseMessage.INVALID_REFRESH_TOKEN
+            );
+        }
+
+        //revoke the token
+        storedRefreshToken.setRevokedAt(LocalDateTime.now());
+
+        refreshTokenRepository.save(storedRefreshToken);
+
     }
 }

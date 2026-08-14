@@ -7,8 +7,10 @@ import com.project.milkcollection.auth.dto.response.RefreshTokenResponse;
 
 public interface AuthService {
 
-    LoginResponse login(LoginRequest loginRequest);
+    LoginResponse login(LoginRequest loginRequest, String ipAddress, String deviceInfo);
 
     RefreshTokenResponse refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+    void logout(RefreshTokenRequest refreshTokenRequest);
 
 }
