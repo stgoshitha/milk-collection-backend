@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -78,6 +77,30 @@ public class UserServiceImpl implements UserService {
         return PageResponse.from(page);
     }
 
+    @Override
+    @Transactional
+    public UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
+
+        User existingUser = findByUserId(userId);
+
+        validateEmailForUpdate(updateUserRequest.email(), userId);
+        validateUsernameForUpdate(updateUserRequest.username(), userId);
+
+        Role role =  findRoleById(updateUserRequest.roleId());
+
+        userMapper.updateEntity(
+                updateUserRequest,
+                existingUser
+        );
+
+        existingUser.setRole(role);
+
+        User updatedUser =
+                userRepository.save(existingUser);
+
+        return userMapper.toResponse(updatedUser);
+    }
+
     // Validate username uniqueness
     private void validateUsername(String username) {
 
@@ -117,6 +140,32 @@ public class UserServiceImpl implements UserService {
                                 ResponseMessage.USER_NOT_FOUND
                         )
                 );
+    }
+
+    // Validate username uniqueness when updating the user
+    private void validateUsernameForUpdate(
+            String username,
+            UUID userId
+    ) {
+
+        if (userRepository.existsByUsernameAndUserIdNot(username, userId)) {
+            throw new ConflictException(
+                    ResponseMessage.USERNAME_ALREADY_EXISTS
+            );
+        }
+    }
+
+    // Validate email uniqueness when updating the user
+    private void validateEmailForUpdate(
+            String email,
+            UUID userId
+    ) {
+
+        if (userRepository.existsByEmailAndUserIdNot(email, userId)) {
+            throw new ConflictException(
+                    ResponseMessage.EMAIL_ALREADY_EXISTS
+            );
+        }
     }
 
 }

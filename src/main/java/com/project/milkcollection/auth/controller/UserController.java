@@ -1,6 +1,7 @@
 package com.project.milkcollection.auth.controller;
 
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
+import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.auth.service.UserService;
 import com.project.milkcollection.common.constants.ResponseMessage;
@@ -80,5 +81,23 @@ public class UserController {
                         users
                         )
                 );
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
+            @PathVariable UUID userId,
+            @RequestBody UpdateUserRequest updateUserRequest
+    ){
+
+        UserResponse updatedUser = userService.updateUser(userId, updateUserRequest);
+
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.success(
+                        "User " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        updatedUser
+                        )
+                );
+
     }
 }

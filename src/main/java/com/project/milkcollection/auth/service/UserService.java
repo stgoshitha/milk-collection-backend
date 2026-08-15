@@ -1,6 +1,7 @@
 package com.project.milkcollection.auth.service;
 
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
+import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.common.dto.PageResponse;
 import org.springframework.data.domain.Page;
@@ -17,5 +18,6 @@ public interface UserService {
 
     PageResponse<UserResponse> getAllUsers(Pageable pageable);
 
+    UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest);
 
 }
