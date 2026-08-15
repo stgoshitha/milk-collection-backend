@@ -1,6 +1,7 @@
 package com.project.milkcollection.auth.service.impl;
 
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
+import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.auth.entity.Role;
 import com.project.milkcollection.auth.entity.User;
@@ -10,13 +11,17 @@ import com.project.milkcollection.auth.repository.RoleRepository;
 import com.project.milkcollection.auth.repository.UserRepository;
 import com.project.milkcollection.auth.service.UserService;
 import com.project.milkcollection.common.constants.ResponseMessage;
+import com.project.milkcollection.common.dto.PageResponse;
 import com.project.milkcollection.exception.ConflictException;
 import com.project.milkcollection.exception.ResourceNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -53,6 +58,26 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponse(savedUser);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getUserById(UUID userId) {
+
+        User user = findByUserId(userId);
+
+        return userMapper.toResponse(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<UserResponse> getAllUsers(Pageable pageable) {
+
+        Page<UserResponse> page = userRepository
+                .findAll(pageable)
+                .map(userMapper::toResponse);
+
+        return PageResponse.from(page);
+    }
+
     // Validate username uniqueness
     private void validateUsername(String username) {
 
@@ -80,6 +105,16 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 ResponseMessage.ROLE_NOT_FOUND
+                        )
+                );
+    }
+
+    private User findByUserId(UUID userId){
+
+        return userRepository.findById(userId)
+                .orElseThrow(()->
+                        new ResourceNotFoundException(
+                                ResponseMessage.USER_NOT_FOUND
                         )
                 );
     }
