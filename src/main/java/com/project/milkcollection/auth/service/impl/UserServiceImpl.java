@@ -2,6 +2,7 @@ package com.project.milkcollection.auth.service.impl;
 
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
+import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.auth.entity.Role;
 import com.project.milkcollection.auth.entity.User;
@@ -79,7 +80,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) {
+    public UserResponse updateUser(
+            UUID userId,
+            UpdateUserRequest updateUserRequest)
+    {
 
         User existingUser = findByUserId(userId);
 
@@ -100,6 +104,28 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.toResponse(updatedUser);
     }
+
+    @Override
+    @Transactional
+    public UserResponse updateUserStatus(
+            UUID userId,
+            UpdateUserStatusRequest updateUserStatusRequest)
+    {
+        User existingUser = findByUserId(userId);
+
+        validateStatusTransition(
+                existingUser.getStatus(),
+                updateUserStatusRequest.status()
+        );
+
+        existingUser.setStatus(updateUserStatusRequest.status());
+
+        User updatedUser = userRepository.save(existingUser);
+
+        return userMapper.toResponse(updatedUser);
+    }
+
+    // ------------------ Private Methods ------------------
 
     // Validate username uniqueness
     private void validateUsername(String username) {
@@ -164,6 +190,19 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmailAndUserIdNot(email, userId)) {
             throw new ConflictException(
                     ResponseMessage.EMAIL_ALREADY_EXISTS
+            );
+        }
+    }
+
+    // Validate user status transition
+    private void validateStatusTransition(
+            UserStatus currentStatus,
+            UserStatus newStatus
+    ) {
+
+        if (currentStatus == newStatus) {
+            throw new ConflictException(
+                    ResponseMessage.USER_ALREADY_IN_STATUS
             );
         }
     }

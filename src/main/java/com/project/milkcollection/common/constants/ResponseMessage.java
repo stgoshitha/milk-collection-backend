@@ -33,6 +33,7 @@ public final class ResponseMessage {
     public static final String USER_ALREADY_EXISTS = "User already exists";
     public static final String USERNAME_ALREADY_EXISTS = "Username already exists";
     public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
+    public static final String USER_ALREADY_IN_STATUS = "User is already in the requested status";
     public static final String ACCOUNT_NOT_ACTIVE = "User account is not active";
     public static final String ACCOUNT_DISABLED = "User account is disabled";
     public static final String ACCOUNT_LOCKED = "User account is locked";

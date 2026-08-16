@@ -2,6 +2,7 @@ package com.project.milkcollection.auth.controller;
 
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
+import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.auth.service.UserService;
 import com.project.milkcollection.common.constants.ResponseMessage;
@@ -86,7 +87,7 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
             @PathVariable UUID userId,
-            @RequestBody UpdateUserRequest updateUserRequest
+            @Valid @RequestBody UpdateUserRequest updateUserRequest
     ){
 
         UserResponse updatedUser = userService.updateUser(userId, updateUserRequest);
@@ -99,5 +100,23 @@ public class UserController {
                         )
                 );
 
+    }
+
+    @PatchMapping("/{userId}/user-status")
+    @PreAuthorize("hasAuthority('USER_STATUS_UPDATE')")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserStatus(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UpdateUserStatusRequest updateUserStatusRequest
+    ){
+
+        UserResponse user = userService.updateUserStatus(userId, updateUserStatusRequest);
+
+        return ResponseEntity
+                .ok()
+                .body(ApiResponse.success(
+                        "User status " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        user
+                        )
+                );
     }
 }
