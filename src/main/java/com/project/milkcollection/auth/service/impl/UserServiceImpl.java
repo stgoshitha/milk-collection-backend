@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -130,6 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
 
         UUID userId = SecurityUtils.getAuthenticatedUserId();
@@ -171,6 +173,17 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getCurrentUser() {
+
+        UUID currentUserId = SecurityUtils.getAuthenticatedUserId();
+
+        User currentUser = findByUserId(currentUserId);
+
+        return userMapper.toResponse(currentUser);
     }
 
     // ------------------ Private Methods ------------------

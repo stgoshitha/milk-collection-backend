@@ -135,4 +135,17 @@ public class UserController {
                         )
                 );
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(){
+
+        UserResponse currentUser = userService.getCurrentUser();
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Current user " + ResponseMessage.FETCH_SUCCESSFULLY,
+                        currentUser
+                )
+        );
+    }
 }

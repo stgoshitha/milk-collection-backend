@@ -26,4 +26,6 @@ public interface UserService {
 
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
+    UserResponse getCurrentUser();
+
 }
