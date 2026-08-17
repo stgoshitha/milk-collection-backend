@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 // Custom implementation of Spring Security UserDetails for authentication
 @RequiredArgsConstructor
@@ -21,6 +22,10 @@ public class CustomUserDetails implements UserDetails {
 
     // Logged-in user entity information
     private final User user;
+
+    public UUID getUserId(){
+        return user.getUserId();
+    }
 
     // Convert user role into Spring Security authorities
     @Override

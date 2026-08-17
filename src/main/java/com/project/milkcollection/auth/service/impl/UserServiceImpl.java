@@ -1,5 +1,6 @@
 package com.project.milkcollection.auth.service.impl;
 
+import com.project.milkcollection.auth.dto.request.user.ChangePasswordRequest;
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
@@ -15,6 +16,9 @@ import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.dto.PageResponse;
 import com.project.milkcollection.exception.ConflictException;
 import com.project.milkcollection.exception.ResourceNotFoundException;
+import com.project.milkcollection.exception.UnauthorizedException;
+import com.project.milkcollection.exception.ValidationException;
+import com.project.milkcollection.security.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,6 +127,50 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.save(existingUser);
 
         return userMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+
+        UUID userId = SecurityUtils.getAuthenticatedUserId();
+
+        User user =  findByUserId(userId);
+
+        if(!passwordEncoder.matches(
+                changePasswordRequest.currentPassword()
+                ,user.getPassword()
+        )){
+            throw new UnauthorizedException(
+                    ResponseMessage.INVALID_CURRENT_PASSWORD
+            );
+        }
+
+        if(!changePasswordRequest.newPassword()
+                .equals(changePasswordRequest.confirmPassword()
+                )
+        ){
+            throw new ValidationException(
+                    ResponseMessage.PASSWORD_MISMATCH
+            );
+        }
+
+        if(passwordEncoder.matches(
+                changePasswordRequest.newPassword(),
+                user.getPassword()
+        )){
+            throw new ConflictException(
+                    ResponseMessage.SAME_PASSWORD
+            );
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(
+                        changePasswordRequest.newPassword()
+                )
+        );
+
+        userRepository.save(user);
+
     }
 
     // ------------------ Private Methods ------------------

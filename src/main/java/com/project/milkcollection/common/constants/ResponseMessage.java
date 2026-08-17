@@ -27,6 +27,7 @@ public final class ResponseMessage {
     public static final String REFRESH_TOKEN_EXPIRED = "Refresh token has expired";
     public static final String TOKEN_REQUIRED = "Authentication token is required";
     public static final String ACCESS_DENIED = "You do not have permission to access this resource";
+    public static final String UNAUTHORIZED = "Authentication is required to access this resource.";
 
     // User response messages
     public static final String USER_NOT_FOUND = "User not found";
@@ -38,6 +39,11 @@ public final class ResponseMessage {
     public static final String ACCOUNT_DISABLED = "User account is disabled";
     public static final String ACCOUNT_LOCKED = "User account is locked";
     public static final String TOKEN_EXPIRED = "Token has expired";
+    public static final String INVALID_CURRENT_PASSWORD = "Current password is incorrect.";
+    public static final String PASSWORD_MISMATCH = "New password and confirm password do not match.";
+    public static final String SAME_PASSWORD = "New password must be different from the current password.";
+    public static final String PASSWORD_CHANGED = "Password changed successfully.";
+
 
     // Role response messages
     public static final String ROLE_NOT_FOUND = "Role not found";

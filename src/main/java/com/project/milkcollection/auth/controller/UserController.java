@@ -1,5 +1,6 @@
 package com.project.milkcollection.auth.controller;
 
+import com.project.milkcollection.auth.dto.request.user.ChangePasswordRequest;
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
@@ -85,6 +86,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
+    @PreAuthorize("hasAuthority('USER_UPDATE')")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(
             @PathVariable UUID userId,
             @Valid @RequestBody UpdateUserRequest updateUserRequest
@@ -116,6 +118,20 @@ public class UserController {
                 .body(ApiResponse.success(
                         "User status " + ResponseMessage.UPDATED_SUCCESSFULLY,
                         user
+                        )
+                );
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest changePasswordRequest
+    ){
+
+        userService.changePassword(changePasswordRequest);
+
+        return ResponseEntity.ok(
+                        ApiResponse.success(
+                                ResponseMessage.PASSWORD_CHANGED
                         )
                 );
     }

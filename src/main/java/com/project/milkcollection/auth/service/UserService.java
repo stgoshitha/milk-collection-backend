@@ -1,5 +1,6 @@
 package com.project.milkcollection.auth.service;
 
+import com.project.milkcollection.auth.dto.request.user.ChangePasswordRequest;
 import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
 import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
@@ -22,5 +23,7 @@ public interface UserService {
     UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest);
 
     UserResponse updateUserStatus(UUID userId, UpdateUserStatusRequest updateUserStatusRequest);
+
+    void changePassword(ChangePasswordRequest changePasswordRequest);
 
 }
