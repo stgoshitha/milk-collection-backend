@@ -133,6 +133,24 @@ CREATE TABLE refresh_tokens(
 );
 
 -- =====================================================
+-- PASSWORD RESET TOKEN
+-- =====================================================
+CREATE TABLE password_reset_tokens (
+    password_reset_token_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    token_hash VARCHAR(255) NOT NULL UNIQUE,
+    expiry_date TIMESTAMP NOT NULL,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_password_reset_token_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+-- =====================================================
 -- INDEXES
 -- =====================================================
 CREATE INDEX idx_user_role
