@@ -3,6 +3,9 @@ package com.project.milkcollection.auth.repository;
 import com.project.milkcollection.auth.entity.RefreshToken;
 import com.project.milkcollection.auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,5 +16,12 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, UUID
 
     Optional<RefreshToken> findByTokenHash(String tokenHash);
 
-    void deleteByUser(User user);
+    @Modifying
+    @Query("""
+    UPDATE RefreshToken rt
+    SET rt.revokedAt = CURRENT_TIMESTAMP
+    WHERE rt.user = :user
+      AND rt.revokedAt IS NULL
+    """)
+    void revokeAllByUser(@Param("user") User user);
 }

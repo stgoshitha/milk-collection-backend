@@ -1,7 +1,9 @@
 package com.project.milkcollection.auth.controller;
 
+import com.project.milkcollection.auth.dto.request.auth.ForgotPasswordRequest;
 import com.project.milkcollection.auth.dto.request.auth.LoginRequest;
 import com.project.milkcollection.auth.dto.request.auth.RefreshTokenRequest;
+import com.project.milkcollection.auth.dto.request.auth.ResetPasswordRequest;
 import com.project.milkcollection.auth.dto.response.LoginResponse;
 import com.project.milkcollection.auth.dto.response.RefreshTokenResponse;
 import com.project.milkcollection.auth.service.AuthService;
@@ -12,10 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(SecurityConstants.AUTH_BASE_URL)
@@ -69,6 +68,37 @@ public class AuthController {
         return ResponseEntity.ok(
                 ApiResponse.success(
                         ResponseMessage.LOGOUT_SUCCESSFULLY
+                )
+        );
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(
+            @Valid
+            @RequestBody
+            ForgotPasswordRequest forgotPasswordRequest
+    ) {
+
+        authService.forgotPassword(forgotPasswordRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.PASSWORD_RESET_LINK_SENT
+                )
+        );
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(
+            @RequestParam String resetToken,
+            @Valid @RequestBody ResetPasswordRequest resetPasswordRequest
+    ) {
+
+        authService.resetPassword(resetToken, resetPasswordRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.PASSWORD_RESET_SUCCESS
                 )
         );
     }

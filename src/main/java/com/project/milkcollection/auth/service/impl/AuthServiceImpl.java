@@ -1,7 +1,9 @@
 package com.project.milkcollection.auth.service.impl;
 
+import com.project.milkcollection.auth.dto.request.auth.ForgotPasswordRequest;
 import com.project.milkcollection.auth.dto.request.auth.LoginRequest;
 import com.project.milkcollection.auth.dto.request.auth.RefreshTokenRequest;
+import com.project.milkcollection.auth.dto.request.auth.ResetPasswordRequest;
 import com.project.milkcollection.auth.dto.response.LoginResponse;
 import com.project.milkcollection.auth.dto.response.RefreshTokenResponse;
 import com.project.milkcollection.auth.entity.RefreshToken;
@@ -10,16 +12,21 @@ import com.project.milkcollection.auth.entity.enums.UserStatus;
 import com.project.milkcollection.auth.repository.RefreshTokenRepository;
 import com.project.milkcollection.auth.repository.UserRepository;
 import com.project.milkcollection.auth.service.AuthService;
+import com.project.milkcollection.auth.service.PasswordResetTokenService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.constants.SecurityConstants;
+import com.project.milkcollection.common.service.EmailService;
 import com.project.milkcollection.exception.UnauthorizedException;
+import com.project.milkcollection.exception.ValidationException;
 import com.project.milkcollection.security.JwtService;
 import com.project.milkcollection.security.RefreshTokenHashService;
+import com.project.milkcollection.security.SecureTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +42,20 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final RefreshTokenHashService refreshTokenHashService;
+    private final SecureTokenService secureTokenService;
+    private final PasswordResetTokenService passwordResetTokenService;
+    private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     @Transactional
-    public LoginResponse login(LoginRequest loginRequest, String ipAddress, String deviceInfo) {
+    public LoginResponse login(
+            LoginRequest loginRequest,
+            String ipAddress,
+            String deviceInfo
+    ) {
 
-        //Find user by username or email.
+        // Find user using username OR email.
         User user =
                 userRepository
                         .findByUsernameOrEmail(
@@ -53,10 +68,11 @@ public class AuthServiceImpl implements AuthService {
                                 )
                         );
 
-        //Authenticate username + password.
         Authentication authentication;
 
         try {
+
+            // Authenticate username + password.
             authentication =
                     authenticationManager.authenticate(
                             new UsernamePasswordAuthenticationToken(
@@ -66,26 +82,29 @@ public class AuthServiceImpl implements AuthService {
                     );
 
         } catch (BadCredentialsException exception) {
+
             throw new UnauthorizedException(
                     ResponseMessage.INVALID_CREDENTIALS
             );
         }
 
-        //Authentication must be successful.
+        // Authentication must be successful.
         if (!authentication.isAuthenticated()) {
+
             throw new UnauthorizedException(
                     ResponseMessage.INVALID_CREDENTIALS
             );
         }
 
-        //User must be active.
+        // User must be active.
         if (user.getStatus() != UserStatus.ACTIVE) {
+
             throw new UnauthorizedException(
                     ResponseMessage.ACCOUNT_NOT_ACTIVE
             );
         }
 
-        //Generate access token
+        // Generate access token.
         String accessToken =
                 jwtService.generateAccessToken(
                         user.getUserId(),
@@ -93,19 +112,19 @@ public class AuthServiceImpl implements AuthService {
                         user.getRole().getRoleName()
                 );
 
-        //Generate refresh token
+        // Generate refresh token.
         String refreshToken =
                 jwtService.generateRefreshToken(
                         user.getUserId()
                 );
 
-        //Hash refresh token.
+        // Hash refresh token before storing.
         String tokenHash =
                 refreshTokenHashService.hash(
                         refreshToken
                 );
 
-        //Save refresh token session
+        // Create refresh-token session.
         RefreshToken refreshTokenEntity =
                 RefreshToken.builder()
                         .user(user)
@@ -123,13 +142,17 @@ public class AuthServiceImpl implements AuthService {
                         )
                         .build();
 
-        refreshTokenRepository.save(refreshTokenEntity);
+        refreshTokenRepository.save(
+                refreshTokenEntity
+        );
 
-        //Update last login.
-        user.setLastLogin(LocalDateTime.now());
+        // Update last login.
+        user.setLastLogin(
+                LocalDateTime.now()
+        );
+
         userRepository.save(user);
 
-        //Return tokens.
         return new LoginResponse(
                 accessToken,
                 refreshToken,
@@ -145,22 +168,24 @@ public class AuthServiceImpl implements AuthService {
             RefreshTokenRequest refreshTokenRequest
     ) {
 
-        String refreshToken = refreshTokenRequest.refreshToken();
+        String refreshToken =
+                refreshTokenRequest.refreshToken();
 
-        //Validate refresh JWT
+        // Validate JWT refresh token.
         if (!jwtService.isRefreshTokenValid(refreshToken)) {
+
             throw new UnauthorizedException(
                     ResponseMessage.INVALID_REFRESH_TOKEN
             );
         }
 
-        //Hash received token
+        // Hash received refresh token.
         String tokenHash =
                 refreshTokenHashService.hash(
                         refreshToken
                 );
 
-        //Find token in database
+        // Find token in database.
         RefreshToken storedToken =
                 refreshTokenRepository
                         .findByTokenHash(tokenHash)
@@ -170,14 +195,15 @@ public class AuthServiceImpl implements AuthService {
                                 )
                         );
 
-        //Check whether token has already been revoked.
+        // Check whether token has already been revoked.
         if (storedToken.getRevokedAt() != null) {
+
             throw new UnauthorizedException(
                     ResponseMessage.INVALID_REFRESH_TOKEN
             );
         }
 
-        //Check database expiration
+        // Check database expiration.
         if (storedToken.getExpiryDate()
                 .isBefore(LocalDateTime.now())) {
 
@@ -186,24 +212,31 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        //Get user
-        User user = storedToken.getUser();
+        User user =
+                storedToken.getUser();
 
-        //User must still be active
+        // User must still be active.
         if (user.getStatus() != UserStatus.ACTIVE) {
+
             throw new UnauthorizedException(
                     ResponseMessage.ACCOUNT_NOT_ACTIVE
             );
         }
 
-        //Get the existing information
-        String deviceInfo = storedToken.getDeviceInfo();
-        String ipAddress = storedToken.getIpAddress();
+        // Preserve device information.
+        String deviceInfo =
+                storedToken.getDeviceInfo();
 
-        //Revoke old refresh token
-        storedToken.setRevokedAt(LocalDateTime.now());
+        // Preserve IP address.
+        String ipAddress =
+                storedToken.getIpAddress();
 
-        //Generate new access token
+        // Revoke old refresh token.
+        storedToken.setRevokedAt(
+                LocalDateTime.now()
+        );
+
+        // Generate new access token.
         String newAccessToken =
                 jwtService.generateAccessToken(
                         user.getUserId(),
@@ -211,19 +244,19 @@ public class AuthServiceImpl implements AuthService {
                         user.getRole().getRoleName()
                 );
 
-        //Generate new refresh token.
+        // Generate new refresh token.
         String newRefreshToken =
                 jwtService.generateRefreshToken(
                         user.getUserId()
                 );
 
-        //Hash new refresh token
+        // Hash new refresh token.
         String newTokenHash =
                 refreshTokenHashService.hash(
                         newRefreshToken
                 );
 
-        //Save new refresh token.
+        // Save new refresh-token session.
         RefreshToken newRefreshTokenEntity =
                 RefreshToken.builder()
                         .user(user)
@@ -241,9 +274,10 @@ public class AuthServiceImpl implements AuthService {
                         )
                         .build();
 
-        refreshTokenRepository.save(newRefreshTokenEntity);
+        refreshTokenRepository.save(
+                newRefreshTokenEntity
+        );
 
-        //Return new tokens
         return new RefreshTokenResponse(
                 newAccessToken,
                 newRefreshToken,
@@ -252,32 +286,41 @@ public class AuthServiceImpl implements AuthService {
         );
     }
 
+
     @Override
     @Transactional
-    public void logout(RefreshTokenRequest refreshTokenRequest) {
+    public void logout(
+            RefreshTokenRequest refreshTokenRequest
+    ) {
 
-        String  refreshToken = refreshTokenRequest.refreshToken();
+        String refreshToken =
+                refreshTokenRequest.refreshToken();
 
-        //Validate that the supplied token is actually a valid refresh token
-        if(!jwtService.isRefreshTokenValid(refreshToken)){
+        // Validate refresh JWT.
+        if (!jwtService.isRefreshTokenValid(refreshToken)) {
+
             throw new UnauthorizedException(
                     ResponseMessage.INVALID_REFRESH_TOKEN
             );
         }
 
-        //Hash the token
-        String tokenHash = refreshTokenHashService.hash(refreshToken);
-
-        //find the token from DB
-        RefreshToken storedRefreshToken = refreshTokenRepository
-                .findByTokenHash(tokenHash)
-                .orElseThrow(() ->
-                        new UnauthorizedException(
-                                ResponseMessage.INVALID_REFRESH_TOKEN
-                        )
+        // Hash token.
+        String tokenHash =
+                refreshTokenHashService.hash(
+                        refreshToken
                 );
 
-        //check whether the token is already revoked
+        // Find token in database.
+        RefreshToken storedRefreshToken =
+                refreshTokenRepository
+                        .findByTokenHash(tokenHash)
+                        .orElseThrow(() ->
+                                new UnauthorizedException(
+                                        ResponseMessage.INVALID_REFRESH_TOKEN
+                                )
+                        );
+
+        // Check whether token was already revoked.
         if (storedRefreshToken.getRevokedAt() != null) {
 
             throw new UnauthorizedException(
@@ -285,10 +328,85 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        //revoke the token
-        storedRefreshToken.setRevokedAt(LocalDateTime.now());
+        // Revoke token.
+        storedRefreshToken.setRevokedAt(
+                LocalDateTime.now()
+        );
 
-        refreshTokenRepository.save(storedRefreshToken);
+        refreshTokenRepository.save(
+                storedRefreshToken
+        );
+    }
 
+
+    @Override
+    @Transactional
+    public void forgotPassword(
+            ForgotPasswordRequest forgotPasswordRequest
+    ) {
+
+        userRepository
+                .findByUsernameOrEmail(
+                        forgotPasswordRequest.loginIdentifier(),
+                        forgotPasswordRequest.loginIdentifier()
+                )
+                .ifPresent(user -> {
+
+                    String token =
+                            secureTokenService.generateToken();
+
+                    passwordResetTokenService.saveToken(
+                            user,
+                            token
+                    );
+
+                    emailService.sendPasswordResetEmail(
+                            user.getEmail(),
+                            token
+                    );
+                });
+    }
+
+
+    @Override
+    @Transactional
+    public void resetPassword(
+            String resetToken,
+            ResetPasswordRequest resetPasswordRequest
+    ) {
+
+        // Confirm both passwords are equal.
+        if (!resetPasswordRequest.newPassword()
+                .equals(
+                        resetPasswordRequest.confirmPassword()
+                )) {
+
+            throw new ValidationException(
+                    ResponseMessage.PASSWORD_MISMATCH
+            );
+        }
+
+        // Validate reset token.
+        User user =
+                passwordResetTokenService.validateToken(resetToken);
+
+        // Update password.
+        user.setPassword(
+                passwordEncoder.encode(
+                        resetPasswordRequest.newPassword()
+                )
+        );
+
+        userRepository.save(user);
+
+        // Mark reset token as used.
+        passwordResetTokenService.markTokenAsUsed(resetToken);
+
+        /*
+         * Important:
+         * Password reset should invalidate all existing
+         * refresh-token sessions.
+         */
+        refreshTokenRepository.revokeAllByUser(user);
     }
 }

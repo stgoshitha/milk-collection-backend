@@ -43,6 +43,11 @@ public final class ResponseMessage {
     public static final String PASSWORD_MISMATCH = "New password and confirm password do not match.";
     public static final String SAME_PASSWORD = "New password must be different from the current password.";
     public static final String PASSWORD_CHANGED = "Password changed successfully.";
+    public static final String INVALID_RESET_TOKEN = "Invalid or already used password reset token.";
+    public static final String RESET_TOKEN_EXPIRED = "Password reset token has expired.";
+    public static final String PASSWORD_RESET_LINK_SENT = "If the email is registered, a password reset link has been sent.";
+    public static final String PASSWORD_RESET_SUCCESS = "Password has been reset successfully.";
+
 
 
     // Role response messages
