@@ -39,6 +39,9 @@ public class User extends BaseEntity {
     @Column(name = "profile_image_url")
     private String profileImgUrl;
 
+    @Column(name = "profile_image_key")
+    private String profileImageKey;
+
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name="status", nullable = false, columnDefinition = "user_status")
