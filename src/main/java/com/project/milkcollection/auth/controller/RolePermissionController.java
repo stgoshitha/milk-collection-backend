@@ -9,6 +9,7 @@ import com.project.milkcollection.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class RolePermissionController {
 
     // Get all permissions assigned to a role
     @GetMapping("/{roleId}/permissions")
+    @PreAuthorize("hasAuthority('ROLE_PERMISSION_LIST')")
     public ResponseEntity<ApiResponse<List<RolePermissionResponse>>> getRolePermissions(
             @PathVariable UUID roleId) {
 
@@ -40,6 +42,7 @@ public class RolePermissionController {
 
     // Replace all permissions assigned to a role
     @PutMapping("/{roleId}/permissions")
+    @PreAuthorize("hasAuthority('ROLE_PERMISSION_UPDATE')")
     public ResponseEntity<ApiResponse<List<RolePermissionResponse>>> updateRolePermissions(
             @PathVariable UUID roleId,
             @Valid @RequestBody UpdateRolePermissionsRequest updateRolePermissionsRequest) {

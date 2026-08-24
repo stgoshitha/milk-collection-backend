@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class PermissionController {
 
     // Create a new permission
     @PostMapping
+    @PreAuthorize("hasAuthority('PERMISSION_CREATE')")
     public ResponseEntity<ApiResponse<PermissionResponse>> createPermission(
             @Valid @RequestBody CreatePermissionRequest createPermissionRequest) {
 
@@ -46,6 +48,7 @@ public class PermissionController {
 
     // Get permission by ID
     @GetMapping("/{permissionId}")
+    @PreAuthorize("hasAuthority('PERMISSION_GET')")
     public ResponseEntity<ApiResponse<PermissionResponse>> getPermissionById(
             @PathVariable UUID permissionId) {
 
@@ -64,6 +67,7 @@ public class PermissionController {
 
     // Get all permissions
     @GetMapping
+    @PreAuthorize("hasAuthority('PERMISSION_LIST')")
     public ResponseEntity<ApiResponse<List<PermissionResponse>>> getAllPermissions() {
 
         List<PermissionResponse> permissions =
@@ -80,6 +84,7 @@ public class PermissionController {
 
     // Update permission details
     @PutMapping("/{permissionId}")
+    @PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
     public ResponseEntity<ApiResponse<PermissionResponse>> updatePermission(
             @PathVariable UUID permissionId,
             @Valid @RequestBody UpdatePermissionRequest updatePermissionRequest) {
@@ -100,6 +105,7 @@ public class PermissionController {
 
     // Update permission status
     @PatchMapping("/{permissionId}/status")
+    @PreAuthorize("hasAuthority('PERMISSION_STATUS_UPDATE')")
     public ResponseEntity<ApiResponse<PermissionResponse>> updatePermissionStatus(
             @PathVariable UUID permissionId,
             @Valid @RequestBody UpdatePermissionStatusRequest updatePermissionStatusRequest) {
@@ -121,6 +127,7 @@ public class PermissionController {
 
     // Get all permissions belonging to a system module
     @GetMapping("/{systemModuleId}/permissions")
+    @PreAuthorize("hasAuthority('PERMISSION_MODULE_LIST')")
     public ResponseEntity<ApiResponse<List<PermissionResponse>>> getModulePermissions(
             @PathVariable UUID systemModuleId) {
 

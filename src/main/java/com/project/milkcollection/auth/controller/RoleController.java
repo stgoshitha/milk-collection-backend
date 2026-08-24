@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CREATE')")
     public ResponseEntity<ApiResponse<RoleResponse>> createRole(
             @Valid @RequestBody CreateRoleRequest createRoleRequest
     ) {
@@ -42,6 +44,7 @@ public class RoleController {
     }
 
     @GetMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_GET')")
     public ResponseEntity<ApiResponse<RoleResponse>> getRoleById(
             @PathVariable UUID roleId) {
 
@@ -56,6 +59,7 @@ public class RoleController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_LIST')")
     public ResponseEntity<ApiResponse<List<RoleResponse>>> getAllRoles(){
 
         List<RoleResponse> roles = roleService.getAllRoles();
@@ -69,6 +73,7 @@ public class RoleController {
     }
 
     @PutMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_UPDATE')")
     public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
             @PathVariable UUID roleId,
             @Valid @RequestBody UpdateRoleRequest updateRoleRequest
@@ -86,6 +91,7 @@ public class RoleController {
     }
 
     @PatchMapping("/{roleId}/status")
+    @PreAuthorize("hasAuthority('ROLE_STATUS_UPDATE')")
     public ResponseEntity<ApiResponse<RoleResponse>> updateRoleStatus(
             @PathVariable UUID roleId,
             @Valid @RequestBody UpdateRoleStatusRequest updateRoleStatusRequest
@@ -102,6 +108,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_DELETE')")
     public ResponseEntity<ApiResponse<RoleResponse>> deleteRole(
             @PathVariable UUID roleId
     ){

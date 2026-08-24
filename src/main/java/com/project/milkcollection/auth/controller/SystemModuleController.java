@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class SystemModuleController {
 
     // Create a new system module
     @PostMapping
+    @PreAuthorize("hasAuthority('SYSTEM_MODULE_CREATE')")
     public ResponseEntity<ApiResponse<SystemModuleResponse>> createSystemModule(
             @Valid @RequestBody CreateSystemModuleRequest request) {
 
@@ -46,6 +48,7 @@ public class SystemModuleController {
 
     // Get a system module by ID
     @GetMapping("/{systemModuleId}")
+    @PreAuthorize("hasAuthority('SYSTEM_MODULE_GET')")
     public ResponseEntity<ApiResponse<SystemModuleResponse>> getSystemModuleById(
             @PathVariable UUID systemModuleId) {
 
@@ -63,6 +66,7 @@ public class SystemModuleController {
 
     // Get all system modules
     @GetMapping
+    @PreAuthorize("hasAuthority('SYSTEM_MODULE_LIST')")
     public ResponseEntity<ApiResponse<List<SystemModuleResponse>>> getAllSystemModules() {
 
         List<SystemModuleResponse> systemModules =
@@ -79,6 +83,7 @@ public class SystemModuleController {
 
     // Update system module details
     @PutMapping("/{systemModuleId}")
+    @PreAuthorize("hasAuthority('SYSTEM_MODULE_UPDATE')")
     public ResponseEntity<ApiResponse<SystemModuleResponse>> updateSystemModule(
             @PathVariable UUID systemModuleId,
             @Valid @RequestBody UpdateSystemModuleRequest updateSystemModuleRequest) {
@@ -100,6 +105,7 @@ public class SystemModuleController {
 
     // Activate or deactivate a system module
     @PatchMapping("/{systemModuleId}/status")
+    @PreAuthorize("hasAuthority('SYSTEM_MODULE_STATUS_UPDATE')")
     public ResponseEntity<ApiResponse<SystemModuleResponse>> updateModuleStatus(
             @PathVariable UUID systemModuleId,
             @Valid @RequestBody UpdateSystemModuleStatusRequest request) {
@@ -121,6 +127,7 @@ public class SystemModuleController {
 
     // Update system module order
     @PatchMapping("/order")
+    @PreAuthorize("hasAuthority('SYSTEM_MODULE_ORDER_UPDATE')")
     public ResponseEntity<ApiResponse<Void>> updateModuleOrder(
             @Valid @RequestBody UpdateSystemModuleOrderRequest updateSystemModuleOrderRequest) {
 

@@ -6,8 +6,6 @@ import com.project.milkcollection.auth.service.UserService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.constants.SecurityConstants;
 import com.project.milkcollection.common.dto.PageResponse;
-import com.project.milkcollection.common.file.dto.FileUploadResponse;
-import com.project.milkcollection.common.file.service.FileStorageService;
 import com.project.milkcollection.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -29,7 +26,6 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final FileStorageService fileStorageService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER_CREATE')")
