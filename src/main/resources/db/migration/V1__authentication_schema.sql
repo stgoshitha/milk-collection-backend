@@ -100,6 +100,7 @@ CREATE TABLE users(
     email VARCHAR(100) UNIQUE,
     password VARCHAR(255) NOT NULL,
     profile_image_url VARCHAR(500),
+    profile_image_key VARCHAR(500),
     status user_status NOT NULL DEFAULT 'ACTIVE',
     last_login TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
