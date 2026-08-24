@@ -14,6 +14,7 @@ public record UserResponse(
         String roleName,
         UserStatus status,
         String profileImgUrl,
+        String profileImageKey,
         LocalDateTime lastLogin,
         LocalDateTime createdAt,
         LocalDateTime updatedAt

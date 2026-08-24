@@ -47,8 +47,7 @@ public final class ResponseMessage {
     public static final String RESET_TOKEN_EXPIRED = "Password reset token has expired.";
     public static final String PASSWORD_RESET_LINK_SENT = "If the email is registered, a password reset link has been sent.";
     public static final String PASSWORD_RESET_SUCCESS = "Password has been reset successfully.";
-
-
+    public static final String PROFILE_IMAGE_NOT_FOUND = "Profile image not found";
 
     // Role response messages
     public static final String ROLE_NOT_FOUND = "Role not found";

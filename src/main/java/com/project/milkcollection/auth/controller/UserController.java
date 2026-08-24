@@ -1,14 +1,13 @@
 package com.project.milkcollection.auth.controller;
 
-import com.project.milkcollection.auth.dto.request.user.ChangePasswordRequest;
-import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
-import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
-import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
+import com.project.milkcollection.auth.dto.request.user.*;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.auth.service.UserService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.constants.SecurityConstants;
 import com.project.milkcollection.common.dto.PageResponse;
+import com.project.milkcollection.common.file.dto.FileUploadResponse;
+import com.project.milkcollection.common.file.service.FileStorageService;
 import com.project.milkcollection.common.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final FileStorageService fileStorageService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER_CREATE')")
@@ -145,6 +147,37 @@ public class UserController {
                 ApiResponse.success(
                         "Current user " + ResponseMessage.FETCH_SUCCESSFULLY,
                         currentUser
+                )
+        );
+    }
+
+    @PostMapping(
+            value = "/profile/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<ApiResponse<UserResponse>> updateProfileImage(
+            @Valid @ModelAttribute UpdateProfileImageRequest updateProfileImageRequest
+    ) {
+
+        UserResponse updateUserProfileResponse =
+                userService.updateProfileImage(updateProfileImageRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Profile Image " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        updateUserProfileResponse
+                )
+        );
+    }
+
+    @DeleteMapping("/profile/image")
+    public ResponseEntity<ApiResponse<Void>> deleteProfileImage() {
+
+        userService.deleteProfileImage();
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Profile Image " + ResponseMessage.DELETED_SUCCESSFULLY
                 )
         );
     }

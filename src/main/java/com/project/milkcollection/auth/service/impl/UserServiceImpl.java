@@ -1,9 +1,6 @@
 package com.project.milkcollection.auth.service.impl;
 
-import com.project.milkcollection.auth.dto.request.user.ChangePasswordRequest;
-import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
-import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
-import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
+import com.project.milkcollection.auth.dto.request.user.*;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.auth.entity.Role;
 import com.project.milkcollection.auth.entity.User;
@@ -14,6 +11,9 @@ import com.project.milkcollection.auth.repository.UserRepository;
 import com.project.milkcollection.auth.service.UserService;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.dto.PageResponse;
+import com.project.milkcollection.common.file.dto.FileUploadResponse;
+import com.project.milkcollection.common.file.service.FileStorageService;
+import com.project.milkcollection.common.file.validator.ImageFileValidator;
 import com.project.milkcollection.exception.ConflictException;
 import com.project.milkcollection.exception.ResourceNotFoundException;
 import com.project.milkcollection.exception.UnauthorizedException;
@@ -25,8 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final FileStorageService fileStorageService;
+    private final ImageFileValidator imageFileValidator;
 
     @Override
     @Transactional
@@ -184,6 +186,65 @@ public class UserServiceImpl implements UserService {
         User currentUser = findByUserId(currentUserId);
 
         return userMapper.toResponse(currentUser);
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateProfileImage(UpdateProfileImageRequest updateProfileImageRequest) {
+
+        UUID userId = SecurityUtils.getAuthenticatedUserId();
+
+        User user = findByUserId(userId);
+
+        String oldProfileImageUrl = user.getProfileImgUrl();
+
+        MultipartFile newProfileImage = updateProfileImageRequest.profile();
+
+        imageFileValidator.validate(newProfileImage);
+
+        FileUploadResponse uploadResponse  =
+                fileStorageService.upload(
+                        newProfileImage,
+                        "profile-image"
+                );
+
+        user.setProfileImgUrl(uploadResponse.url());
+        user.setProfileImageKey(uploadResponse.publicID());
+
+        User updatedUser = userRepository.save(user);
+
+        if (oldProfileImageUrl != null
+                && !oldProfileImageUrl.isBlank()) {
+
+            fileStorageService.delete(
+                    user.getProfileImageKey()
+            );
+        }
+
+        return userMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public void deleteProfileImage() {
+
+        UUID userId = SecurityUtils.getAuthenticatedUserId();
+
+        User user = findByUserId(userId);
+
+        String profileImageKey = user.getProfileImageKey();
+
+        if (profileImageKey == null || profileImageKey.isBlank()) {
+            throw new ResourceNotFoundException(
+                    ResponseMessage.PROFILE_IMAGE_NOT_FOUND
+            );
+        }
+
+        fileStorageService.delete(profileImageKey);
+
+        user.setProfileImgUrl(null);
+        user.setProfileImageKey(null);
+
+        userRepository.save(user);
     }
 
     // ------------------ Private Methods ------------------

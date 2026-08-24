@@ -3,6 +3,7 @@ package com.project.milkcollection.exception;
 import com.project.milkcollection.common.constants.ResponseMessage;
 import com.project.milkcollection.common.dto.ApiError;
 import com.project.milkcollection.common.response.ApiErrorResponse;
+import com.project.milkcollection.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -36,6 +37,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiErrorResponse> handleValidationException(
             final ValidationException ex) {
+
+        return ResponseEntity.badRequest()
+                .body(ApiErrorResponse.of(ex.getMessage()));
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ApiErrorResponse> handleFileStorageException(
+            final FileStorageException ex) {
 
         return ResponseEntity.badRequest()
                 .body(ApiErrorResponse.of(ex.getMessage()));

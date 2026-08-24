@@ -1,13 +1,11 @@
 package com.project.milkcollection.auth.service;
 
-import com.project.milkcollection.auth.dto.request.user.ChangePasswordRequest;
-import com.project.milkcollection.auth.dto.request.user.CreateUserRequest;
-import com.project.milkcollection.auth.dto.request.user.UpdateUserRequest;
-import com.project.milkcollection.auth.dto.request.user.UpdateUserStatusRequest;
+import com.project.milkcollection.auth.dto.request.user.*;
 import com.project.milkcollection.auth.dto.response.UserResponse;
 import com.project.milkcollection.common.dto.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,5 +25,9 @@ public interface UserService {
     void changePassword(ChangePasswordRequest changePasswordRequest);
 
     UserResponse getCurrentUser();
+
+    UserResponse updateProfileImage(UpdateProfileImageRequest updateProfileImageRequest);
+
+    void deleteProfileImage();
 
 }
