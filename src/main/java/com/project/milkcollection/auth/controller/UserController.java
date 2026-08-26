@@ -147,7 +147,7 @@ public class UserController {
         );
     }
 
-    @PostMapping(
+    @PatchMapping(
             value = "/profile/image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
