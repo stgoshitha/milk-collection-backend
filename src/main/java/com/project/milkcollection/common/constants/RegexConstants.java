@@ -82,4 +82,38 @@ public final class RegexConstants {
     public static final String DECIMAL =
             "^\\d+(\\.\\d{1,2})?$";
 
+    /**
+     * Role name
+     *
+     */
+    public static final String ROLE_NAME =
+            "^[A-Za-z][A-Za-z0-9_ ]{1,49}$";
+
+    /**
+     * Role code
+     *
+     */
+    public static final String ROLE_CODE =
+            "^ROLE_[A-Z0-9_]{2,47}$";
+
+    /**
+     * System module code
+     *
+     */
+    public static final String SYSTEM_MODULE_NAME =
+            "^[A-Za-z][A-Za-z0-9 ]*$";
+
+    /**
+     * System module icon
+     *
+     */
+    public static final String SYSTEM_MODULE_ICON =
+            "^[A-Za-z][A-Za-z0-9]*$";
+
+    /**
+     * System module icon
+     *
+     */
+    public static final String PERMISSION_NAME =
+            "^[A-Z]+(?:_[A-Z]+)*$";
 }

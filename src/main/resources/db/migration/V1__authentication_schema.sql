@@ -23,6 +23,7 @@ CREATE TYPE common_status AS ENUM (
 -- =====================================================
 CREATE TABLE roles(
     role_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    role_code VARCHAR(50) NOT NULL UNIQUE,
     role_name VARCHAR(50) NOT NULL UNIQUE,
     description VARCHAR(255),
     status common_status NOT NULL DEFAULT 'ACTIVE',
@@ -99,6 +100,7 @@ CREATE TABLE users(
     email VARCHAR(100) UNIQUE,
     password VARCHAR(255) NOT NULL,
     profile_image_url VARCHAR(500),
+    profile_image_key VARCHAR(500),
     status user_status NOT NULL DEFAULT 'ACTIVE',
     last_login TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -121,6 +123,7 @@ CREATE TABLE refresh_tokens(
     device_info VARCHAR(255),
     ip_address VARCHAR(45),
     expiry_date TIMESTAMP NOT NULL,
+    revoked_at TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_refresh_token_user
@@ -128,6 +131,24 @@ CREATE TABLE refresh_tokens(
             REFERENCES users(user_id)
             ON UPDATE CASCADE
             ON DELETE CASCADE
+);
+
+-- =====================================================
+-- PASSWORD RESET TOKEN
+-- =====================================================
+CREATE TABLE password_reset_tokens (
+    password_reset_token_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    token_hash VARCHAR(255) NOT NULL UNIQUE,
+    expiry_date TIMESTAMP NOT NULL,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_password_reset_token_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- =====================================================
@@ -157,12 +178,14 @@ ON refresh_tokens(expiry_date);
 -- =====================================================
 -- DEFAULT ROLES
 -- =====================================================
-INSERT INTO roles(role_name, description)
+INSERT INTO roles
+(role_code, role_name,description)
 VALUES
-('ADMIN','System Administrator'),
-('MANAGER','Collection Center Manager'),
-('COLLECTOR','Milk Collection Officer'),
-('ACCOUNTANT','Finance Officer');
+('ROLE_ADMIN','ADMIN','System Administrator'),
+('ROLE_MANAGER','MANAGER','Collection Center Manager'),
+('ROLE_COLLECTOR','COLLECTOR','Milk Collection Officer'),
+('ROLE_ACCOUNTANT', 'ACCOUNTANT','Finance Officer');
+
 
 -- =====================================================
 -- DEFAULT MODULES
