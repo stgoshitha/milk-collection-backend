@@ -1,0 +1,125 @@
+package com.project.milkcollection.auth.controller;
+
+import com.project.milkcollection.auth.dto.request.role.CreateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleRequest;
+import com.project.milkcollection.auth.dto.request.role.UpdateRoleStatusRequest;
+import com.project.milkcollection.auth.dto.response.RoleResponse;
+import com.project.milkcollection.auth.service.RoleService;
+import com.project.milkcollection.common.constants.ResponseMessage;
+import com.project.milkcollection.common.constants.SecurityConstants;
+import com.project.milkcollection.common.response.ApiResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping(SecurityConstants.ROLE_BASE_URL)
+@RequiredArgsConstructor
+public class RoleController {
+
+    private final RoleService roleService;
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CREATE')")
+    public ResponseEntity<ApiResponse<RoleResponse>> createRole(
+            @Valid @RequestBody CreateRoleRequest createRoleRequest
+    ) {
+
+        RoleResponse response = roleService.createRole(createRoleRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        ApiResponse.success(
+                                "Role " +  ResponseMessage.CREATED_SUCCESSFULLY,
+                                response
+                        )
+                );
+    }
+
+    @GetMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_GET')")
+    public ResponseEntity<ApiResponse<RoleResponse>> getRoleById(
+            @PathVariable UUID roleId) {
+
+        RoleResponse role = roleService.getRoleById(roleId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Role " + ResponseMessage.FETCH_SUCCESSFULLY,
+                        role
+                )
+        );
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_LIST')")
+    public ResponseEntity<ApiResponse<List<RoleResponse>>> getAllRoles(){
+
+        List<RoleResponse> roles = roleService.getAllRoles();
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Roles " + ResponseMessage.FETCH_SUCCESSFULLY,
+                        roles
+                )
+        );
+    }
+
+    @PutMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_UPDATE')")
+    public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
+            @PathVariable UUID roleId,
+            @Valid @RequestBody UpdateRoleRequest updateRoleRequest
+    ){
+
+        RoleResponse role = roleService.updateRole(roleId, updateRoleRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Role " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        role
+                )
+        );
+
+    }
+
+    @PatchMapping("/{roleId}/status")
+    @PreAuthorize("hasAuthority('ROLE_STATUS_UPDATE')")
+    public ResponseEntity<ApiResponse<RoleResponse>> updateRoleStatus(
+            @PathVariable UUID roleId,
+            @Valid @RequestBody UpdateRoleStatusRequest updateRoleStatusRequest
+    ) {
+
+        RoleResponse role = roleService.updateRoleStatus(roleId, updateRoleStatusRequest);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Role status " + ResponseMessage.UPDATED_SUCCESSFULLY,
+                        role
+                )
+        );
+    }
+
+    @DeleteMapping("/{roleId}")
+    @PreAuthorize("hasAuthority('ROLE_DELETE')")
+    public ResponseEntity<ApiResponse<RoleResponse>> deleteRole(
+            @PathVariable UUID roleId
+    ){
+
+        RoleResponse role = roleService.deleteRole(roleId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        ResponseMessage.ROLE_DEACTIVATED_SUCCESSFULLY,
+                        role
+                )
+        );
+    }
+}
